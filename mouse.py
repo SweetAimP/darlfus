@@ -61,7 +61,7 @@ class Mouse:
         if end:
             start = self.game.map.get_current_player_tile(self.game.turn_order[self.game.current_player_index])
             if start != end:
-                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, player_mp)
+                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, player_mp, self.game.current_player.tag)
             else:
                 return False, False
         else:

@@ -17,12 +17,15 @@ class Game:
         self.spells_menu = Spell_menu()
        
         # PLAYERS
+        self.players_group = pg.sprite.Group()
+        self.enemies_group = pg.sprite.Group()
+
         self.entities = []
         self.entities.append(
-            Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player')
+            Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
         )
         self.entities.append(
-            Enemy((2,2), "warrior", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc')
+            Enemy(self.__get_instance(), (2,2), "warrior", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.enemies_group)
         )
                 
         # MAP

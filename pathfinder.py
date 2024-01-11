@@ -36,7 +36,7 @@ class PathFinder:
                 )
         self.movement_direction.append(self.movement_direction[-1])
 
-    def find_path(self,grid,start,end, player_mp):
+    def find_path(self, grid, start, end, player_mp, caller_type):
             self.start = start
             self.end = end
             count = 0
@@ -63,14 +63,23 @@ class PathFinder:
                     return reconstructed_path[:player_mp],movement_direction[:player_mp]
                                
                 for neighbor in current.neighbors:
-                    if neighbor.walkable:
-                        temp_g_score = g_score[current] + 1
-                        if temp_g_score < g_score[neighbor]:
-                            came_from[neighbor] = current
-                            g_score[neighbor] = temp_g_score
-                            f_score[neighbor] = temp_g_score + self.h(neighbor.get_pos(), end.get_pos())
-                            if neighbor not in open_set_hash:
-                                count += 1
-                                open_set.put((f_score[neighbor], count, neighbor))
-                                open_set_hash.add(neighbor)
+                    if caller_type == 'player':
+                        if neighbor.walkable:
+                            self.__get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)
+                    elif caller_type == 'npc':
+                        if not neighbor.walkable and neighbor.status == 2:
+                            self.__get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)
+                        elif neighbor.walkable:
+                            self.__get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)
             return False
+    
+    def __get_score(self,g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count):
+        temp_g_score = g_score[current] + 1
+        if temp_g_score < g_score[neighbor]:
+            came_from[neighbor] = current
+            g_score[neighbor] = temp_g_score
+            f_score[neighbor] = temp_g_score + self.h(neighbor.get_pos(), end.get_pos())
+            if neighbor not in open_set_hash:
+                count += 1
+                open_set.put((f_score[neighbor], count, neighbor))
+                open_set_hash.add(neighbor)

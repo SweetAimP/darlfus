@@ -32,4 +32,7 @@ class Tile(pg.sprite.Sprite):
     
     def get_neighbors(self):
         return self.neighbors
+    
+    def __lt__(self, other): #need for the revision of less than during the neighborm score asignation
+        return False
                 
