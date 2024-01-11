@@ -26,9 +26,7 @@ class Enemy(Character):
         start = self.game.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
         for target in self.game.players_group.sprites():
             end = self.game.map.grid[int(target.grid_pos[1])][int(target.grid_pos[0])]
-            print(start.grid_pos,end.grid_pos)
             recons_path, _ = self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.tag)
-            print(len(recons_path))
             paths.append([recons_path,target])
         shortest_path = min(paths, key=lambda path: len(path[0]))
         return shortest_path
@@ -45,9 +43,12 @@ class Enemy(Character):
                         self.attack_flag = True
                     elif len(self.steps) <= spell.range + self.usable_mp:
                         needed_steps = len(self.steps) - spell.range
+                        self.steps = self.steps[:needed_steps]
                         if needed_steps <= self.usable_mp:
                             self.move_and_attack_flag =  True
                             break
+                    else:
+                        self.end_turn()
         if self.attack_flag:
             self.attack(self.target, self.spell_used)
         elif self.move_and_attack_flag:
@@ -60,6 +61,7 @@ class Enemy(Character):
             self._update_ap()
         else:
             self.attack_flag = False
+            self.end_turn()
         
 
     def move_and_attack(self, target, spell):
@@ -70,8 +72,12 @@ class Enemy(Character):
         else:
             self.clean_up()
             self._update_mp()
-            print(self.usable_mp)
-            self.attack(target, spell)
+            self.attack_flag = True
+            self.move_and_attack_flag = False
+
+    def end_turn(self):
+        self.playing = False
+        self.clean_up()
 
     def update(self):
         if self.playing:

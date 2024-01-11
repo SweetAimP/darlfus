@@ -23,23 +23,24 @@ class Mouse:
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONDOWN and not self.clicked:
                 current_player = self.game.current_player.get_instance()
-                # Access all the event hanlders from entities
-                if self.game.end_turn_rect.collidepoint(self.get_pos()): # CHECK FOR END TURN INPUT
-                    current_player.playing = False
-                    self.clean_up()
-                elif self.get_spell_selected():  
-                    self.spell_casting =  True
-                    current_player.spell_casting = True
-                elif self.spell_casting:
-                    if self.get_attacked_entities():
-                        self.game.current_player.ap_used += self.game.current_player.spells[self.spell_casting_index].ap_cost
+                if current_player.tag  == 'player':
+                    # Access all the event hanlders from entities
+                    if self.game.end_turn_rect.collidepoint(self.get_pos()): # CHECK FOR END TURN INPUT
+                        current_player.playing = False
                         self.clean_up()
-                elif not self.spell_casting:
-                    recons_path, directions = self.get_walking_path()
-                    if recons_path:  # CHECK FOR MOVEMENT INPUT
-                        current_player.moving = True
-                        current_player.steps =  recons_path
-                        current_player.directions = directions
+                    elif self.get_spell_selected():  
+                        self.spell_casting =  True
+                        current_player.spell_casting = True
+                    elif self.spell_casting:
+                        if self.get_attacked_entities():
+                            self.game.current_player.ap_used += self.game.current_player.spells[self.spell_casting_index].ap_cost
+                            self.clean_up()
+                    elif not self.spell_casting:
+                        recons_path, directions = self.get_walking_path()
+                        if recons_path:  # CHECK FOR MOVEMENT INPUT
+                            current_player.moving = True
+                            current_player.steps =  recons_path
+                            current_player.directions = directions
                 
                 
 

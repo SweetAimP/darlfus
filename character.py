@@ -79,9 +79,10 @@ class Character(pg.sprite.Sprite):
                 self.clean_up()
 
     def take_damage(self, dmg):
-        if self.current_health > 0:
+        if self.current_health - dmg > 0:
             self.current_health -= dmg
         else:
+            self.current_health = 0
             print("Muere perro")
 
     def update(self):

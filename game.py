@@ -25,10 +25,7 @@ class Game:
             Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
         )
         self.entities.append(
-            Character((4,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
-        )
-        self.entities.append(
-            Enemy(self.__get_instance(), (2,2), "warrior", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.enemies_group)
+            Enemy(self.__get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.enemies_group)
         )
                 
         # MAP
@@ -95,6 +92,7 @@ class Game:
 
     def run(self):
         self.turn_start_time = time.time()
+        start_game = time.time()
         while True:
             # Clearing the screen
             self.screen.fill('black')
@@ -102,9 +100,11 @@ class Game:
             self.spells_menu.draw_spell_menu(self.screen, self.spell_font)
             
             # Listening for mouse events (click)
+           
             self.mouse.check_events()
             if not self.current_player.playing:
                 self.switch_turn()
+            
 
             # DRAWING MAP TILES
             self.map.update()
