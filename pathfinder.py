@@ -36,7 +36,7 @@ class PathFinder:
                 )
         self.movement_direction.append(self.movement_direction[-1])
 
-    def find_path(self, grid, start, end, player_mp, caller_type):
+    def find_path(self, grid, start, end, caller_type):
             self.start = start
             self.end = end
             count = 0
@@ -60,7 +60,7 @@ class PathFinder:
                     reconstructed_path = self.reconstructed_path[1::]
                     movement_direction = self.movement_direction
                     self.reset_variables()
-                    return reconstructed_path[:player_mp],movement_direction[:player_mp]
+                    return reconstructed_path,movement_direction
                                
                 for neighbor in current.neighbors:
                     if caller_type == 'player':

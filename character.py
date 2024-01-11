@@ -56,23 +56,26 @@ class Character(pg.sprite.Sprite):
         self.ap_used = 0
         self.usable_ap = self.ap
 
-    def __update_rect(self):
+    def _update_rect(self):
         self.rect.topleft = self.draw_pos
 
-    def __update_draw_pos(self):
+    def _update_draw_pos(self):
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
 
-    def __update_ap(self):
+    def _update_ap(self):
         self.usable_ap = self.ap - self.ap_used
 
+    def _update_mp(self):
+        self.usable_mp = self.mp - self.mp_used
+
     def move(self):
-        if len(self.steps) > 0:
+        if len(self.steps) > 0 and self.usable_mp > 0:
             self.grid_pos = self.steps[self.current_step].grid_pos
             if self.current_step + 1 < len(self.steps):
                 self.current_step += 1
             else:
                 self.mp_used += len(self.steps)
-                self.usable_mp = self.mp - self.mp_used
+                self._update_mp()
                 self.clean_up()
 
     def take_damage(self, dmg):
@@ -83,9 +86,9 @@ class Character(pg.sprite.Sprite):
 
     def update(self):
         self.move()
-        self.__update_draw_pos()
-        self.__update_rect()
-        self.__update_ap()
+        self._update_draw_pos()
+        self._update_rect()
+        self._update_ap()
         
     
     def draw(self, surface):

@@ -25,6 +25,9 @@ class Game:
             Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
         )
         self.entities.append(
+            Character((4,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
+        )
+        self.entities.append(
             Enemy(self.__get_instance(), (2,2), "warrior", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.enemies_group)
         )
                 

@@ -35,7 +35,7 @@ class Mouse:
                         self.game.current_player.ap_used += self.game.current_player.spells[self.spell_casting_index].ap_cost
                         self.clean_up()
                 elif not self.spell_casting:
-                    recons_path, directions = self.get_walking_path(self.game.current_player.usable_mp)
+                    recons_path, directions = self.get_walking_path()
                     if recons_path:  # CHECK FOR MOVEMENT INPUT
                         current_player.moving = True
                         current_player.steps =  recons_path
@@ -56,21 +56,22 @@ class Mouse:
     def get_pos(self):
         return pg.mouse.get_pos()
     
-    def get_walking_path(self,player_mp):
+    def get_walking_path(self,):
         end = self.game.map.get_hover_tile(self.get_pos())
         if end:
             start = self.game.map.get_current_player_tile(self.game.turn_order[self.game.current_player_index])
             if start != end:
-                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, player_mp, self.game.current_player.tag)
+                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
             else:
                 return False, False
         else:
             return False, False
         
     def draw(self):
-        if not self.spell_casting:
-            recons_path, _ = self.get_walking_path(self.game.current_player.usable_mp)   
+        if not self.spell_casting and self.game.current_player.usable_mp > 0:
+            recons_path, _ = self.get_walking_path()   
             if recons_path:
+                recons_path = recons_path[:self.game.current_player.usable_mp]
                 for node in recons_path:
                     self.game.screen.blit(
                         self.image,
