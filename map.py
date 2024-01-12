@@ -11,13 +11,13 @@ class Map:
         self.update_busy_tiles()
         self.update_neightbors()
         self.pathfinder = PathFinder()
-    
+
     def update_busy_tiles(self):
         for row in self.grid:
             for tile in row:
                 if tile.type == 1:
-                    for entity in self.game.entities:
-                        if tile.grid_pos == entity.grid_pos:
+                    for entity in self.game.entities.sprites():
+                        if hasattr(entity, 'grid_pos') and tile.grid_pos == entity.grid_pos:
                             tile.status = 2
                             break
                         else:

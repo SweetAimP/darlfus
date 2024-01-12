@@ -2,6 +2,7 @@ import time
 from utils import *
 from settings import *
 from map import Map
+from entities import Entities
 from character import Character
 from enemy import Enemy
 from mouse import Mouse
@@ -19,14 +20,9 @@ class Game:
         # PLAYERS
         self.players_group = pg.sprite.Group()
         self.enemies_group = pg.sprite.Group()
-
-        self.entities = []
-        self.entities.append(
-            Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.players_group)
-        )
-        self.entities.append(
-            Enemy(self.__get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.enemies_group)
-        )
+        self.entities = Entities()
+        Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.entities, self.players_group)
+        Enemy(self.__get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.entities, self.enemies_group)
                 
         # MAP
         self.map = Map(self.__get_instance(),'map.txt')
@@ -116,10 +112,9 @@ class Game:
             self.mouse.draw()
 
             # ENTITIES
-            for entity in self.entities:
-                entity.update()
-                entity.draw(self.screen)
-                entity.health_bar.draw(self.screen)
+            if time.time() - start_game > 5:
+                self.entities.update()
+            self.entities.draw(self.screen)
             
             # TURN TIMER    
             self.end_turn_btn()

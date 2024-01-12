@@ -5,7 +5,7 @@ from spell import Spell
 from healthbar import HealthBar
 
 class Character(pg.sprite.Sprite):
-    def __init__(self, pos, type, image, tag,*groups):
+    def __init__(self, pos, type, image, tag, *groups):
         super().__init__(*groups)
         self.grid_pos = pg.Vector2(pos)
         self.size = 32
@@ -97,4 +97,5 @@ class Character(pg.sprite.Sprite):
             self.image,
             self.draw_pos
         )
+        self.health_bar.draw(surface)
         
