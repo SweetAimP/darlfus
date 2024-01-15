@@ -46,15 +46,19 @@ class Player(Entity):
                         self.directions = _
                 else:
                     return False
-
+    
+    def draw_spell_casting(self,surface):
+        range_tiles = self.spell_selected.draw_spell_range(surface)
+        hover_tile = self.map.get_hover_tile()
+        if hover_tile and hover_tile in range_tiles:
+            self.spell_selected.draw_spell_area(surface, hover_tile)
+                
     def draw(self, surface):
         if self.moving:
             self.draw_movement(surface)
         elif self.spell_casting:
-            range_tiles = self.spell_selected.draw_spell_range(surface)
-            hover_tile = self.map.get_hover_tile()
-            if hover_tile and hover_tile in range_tiles:
-                self.spell_selected.draw_spell_area(surface, hover_tile)
+            self.draw_spell_casting(surface)
+
         surface.blit(
             self.image,
             self.draw_pos
