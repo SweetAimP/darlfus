@@ -4,12 +4,10 @@ from pathfinder import PathFinder
 
 
 class Map:
-    def __init__(self, game, map_file):
+    def __init__(self, game):
         self.game = game
         self.grid_group = pg.sprite.Group()
-        self.grid = self.make_grid(map_file) # Grid is structured like [y][x]
-        self.update_busy_tiles()
-        self.update_neightbors()
+        self.grid = None
         self.pathfinder = PathFinder()
 
     def update_busy_tiles(self):
@@ -55,9 +53,12 @@ class Map:
                     )
                 )
             grid.append(xs)
-        return grid
+        self.grid = grid
+        self.update_busy_tiles()
+        self.update_neightbors()
     
-    def get_hover_tile(self, point):
+    def get_hover_tile(self):
+        point = self.game.mouse.get_pos()
         for row in self.grid:
             for tile in row:
                 if tile.status == 0:
@@ -65,10 +66,20 @@ class Map:
                         return tile
         return False
     
+    def get_walking_path(self):
+        end = self.get_hover_tile()
+        if end and distance_to(self.game.current_player.grid_pos,end.grid_pos) <= self.game.current_player.usable_mp:
+            start = self.game.map.get_current_player_tile(self.game.turn_order[self.game.current_player_index])
+            if start != end:
+                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
+            else:
+                return False, False
+        else:
+            return False, False
+
     def get_current_player_tile(self, player):
         return self.grid[int(player.grid_pos.y)][int(player.grid_pos.x)]
     
-
     def update(self):
         self.update_busy_tiles()
         self.update_neightbors()

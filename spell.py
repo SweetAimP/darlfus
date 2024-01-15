@@ -1,30 +1,36 @@
 from utils import *
 class Spell:
-    def __init__(self, spell_settings):
+    def __init__(self, owner, spell_settings):
+        self.owner = owner
+        self.owner_tile = self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]
         self.type = spell_settings["type"]
         self.area = spell_settings["area"]
         self.range = spell_settings["range"]
         self.spell_dmg = spell_settings["damage"]
         self.ap_cost = spell_settings["ap_cost"]
-    
-    def draw_range(self, center):
-        set_tiles = set()
-        set_tiles.add(center)
-        self.get_area_by_depth(center, 0, set_tiles, self.range)
-        for tile in set_tiles:
-            pg.display.get_surface().blit(
-                pg.image.load('assets/mouse/hover.png').convert_alpha(),
-                tile.draw_pos
-            )
-        return set_tiles
-        
-    def get_area_by_depth(self, center, depth, set_tiles, end_flag):
-        if depth == end_flag:
+        self.range_tiles = []
+        self.area_tiles = []
+
+    def update_onwer_tile(self):
+        if self.owner_tile != self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]:
+            self.owner_tile = self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]
             return True
-        for neighbor in center.get_neighbors():
-            set_tiles.add(neighbor)
-            self.get_area_by_depth(neighbor, depth + 1, set_tiles, end_flag)
-    
+        return False
+
+    def draw_spell_range(self):
+        if self.update_onwer_tile():
+            set_range_tiles = set()
+            set_range_tiles.add(self.owner_tile)
+            self.get_area_by_depth(self.owner_tile, 0, set_range_tiles, self.range)
+            self.range_tiles = set_range_tiles
+
+        for tile in self.range_tiles:
+                pg.display.get_surface().blit(
+                    pg.image.load('assets/mouse/hover.png').convert_alpha(),
+                    tile.draw_pos
+                )
+        return self.range_tiles
+        
     def draw_spell_area(self, center):
         set_are_tiles = set()
         set_are_tiles.add(center)
@@ -36,6 +42,12 @@ class Spell:
             )
         return set_are_tiles
 
+    def get_area_by_depth(self, center, depth, set_tiles, end_flag):
+        if depth == end_flag:
+            return True
+        for neighbor in center.get_neighbors():
+            set_tiles.add(neighbor)
+            self.get_area_by_depth(neighbor, depth + 1, set_tiles, end_flag)
     
             
             

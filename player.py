@@ -1,12 +1,16 @@
 from entity import Entity
+from utils import *
 
 class Player(Entity):
-    def __init__(self, game, tag, type, image, grid_pos, *groups):
-        super().__init__(game, tag, type, image, grid_pos, *groups)
+    def __init__(self, map, tag, type, image, grid_pos, *groups):
+        super().__init__(map, tag, type, image, grid_pos, *groups)
+        self.map = map
 
         # FLAGS
         self.spell_casting = False
-        
+        self.spell_selected = None
+        self.clicked = False
+
     def move(self):
         if len(self.steps) > 0 and self.usable_mp > 0:
             self.grid_pos = self.steps[self.current_step].grid_pos
@@ -15,8 +19,41 @@ class Player(Entity):
             else:
                 self.mp_used += len(self.steps)
                 self._update_mp()
-                self.clean_up()
+                self.on_click()
+                self.movement_clean_up()
 
+    def on_click(self):
+        self.clicked = not self.clicked
+
+    def draw_movement(self, surface):
+            recons_path, _ = self.map.get_walking_path()
+            if not self.steps:
+                if recons_path:
+                    for node in recons_path:
+                        surface.blit(
+                            node.hover_img,
+                            node.rect.topleft
+                        )
+                    if self.clicked:
+                        self.steps = recons_path
+                        self.directions = _
+                else:
+                    return False
+
+    def draw(self, surface):
+        surface.blit(
+            self.image,
+            self.draw_pos
+        )
+        self.health_bar.draw(surface)
+        if self.moving:
+            self.draw_movement(surface)
+        elif self.spell_casting:
+            range_tiles = self.spell_selected.draw_spell_range()
+            hover_tile = self.map.get_hover_tile()
+            if hover_tile and hover_tile in range_tiles:
+                self.spell_selected.draw_spell_area(hover_tile)
+    
     def update(self):
         self.move()
         self._update_draw_pos()

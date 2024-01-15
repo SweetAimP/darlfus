@@ -16,19 +16,20 @@ class Game:
         self.turn_font = pg.Font(None, 40)
         self.spell_font = pg.Font(None, 40)
         self.spells_menu = Spell_menu()
-       
-        # PLAYERS
+        
+        # GROUPS
         self.players_group = pg.sprite.Group()
         self.enemies_group = pg.sprite.Group()
         self.entity_group = EntityGroup()
-        Player(self._get_instance, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group)
-        Player(self._get_instance, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group)
 
-        # Enemy(self._get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.entities, self.enemies_group)
-                
         # MAP
-        self.map = Map(self._get_instance(),'map.txt')
+        self.map = Map(self._get_instance())
         self.draw_base_grid()
+        self.map.make_grid('map.txt')
+        
+        # PLAYERS
+        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group)
+        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())
@@ -41,7 +42,7 @@ class Game:
         self.current_player = self.get_current_player()
 
         # INITIALIZATON FORCED
-        self.turn_order[0].playing = True
+        self.turn_order[0].start_turn()
         self.spells_menu.create_spell_rects(len(self.current_player.spells))
         self.map.grid_group.update(self.entity_group)
         
@@ -65,7 +66,6 @@ class Game:
         self.spells_menu.create_spell_rects(len(self.current_player.spells))
         self.current_player.start_turn()
         self.turn_start_time = time.time()
-        self.mouse.clean_up()
         
     def end_turn_btn(self):
         button_rect = pg.Rect(0, SCREEN_SIZE['height'] - 50, SCREEN_SIZE['width'], 50)
@@ -79,7 +79,7 @@ class Game:
         if elapsed_time > self.turn_time_limit:
             self.switch_turn()
 
-    def draw_turn_timer(self,start_time):
+    def _draw_turn_timer(self,start_time):
         elapsed_time = int(time.time() - start_time)
         text = self.turn_font.render(str(self.turn_time_limit - elapsed_time), True, 'orange')
         text_rect =  text.get_rect(topleft = (SCREEN_SIZE['width']*0.025,SCREEN_SIZE['height']*0.025))
@@ -87,6 +87,13 @@ class Game:
             text,text_rect
         )
         self.__check_turn_timer(elapsed_time)
+
+    def get_spell_selected(self, mouse_pos):
+        for spell_index, spell_rect in enumerate(self.spells_menu.spell_rects):
+            if spell_rect.collidepoint(mouse_pos):
+                self.current_player.spell_selected = self.current_player.spells[spell_index]
+                return True
+        return False
 
     def run(self):
         self.turn_start_time = time.time()
@@ -101,8 +108,8 @@ class Game:
             self.spells_menu.draw_spell_menu(self.screen, self.spell_font)
             
             # Listening for mouse events (click)
-           
             self.mouse.check_events()
+
             if not self.current_player.playing:
                 self.switch_turn()
             
@@ -110,11 +117,6 @@ class Game:
             # DRAWING MAP TILES
             self.map.update()
             self.map.draw()
-
-
-            # MOUSE
-            self.mouse.update()
-            self.mouse.draw()
 
             # ENTITIES
             if started:
@@ -124,7 +126,7 @@ class Game:
             # TURN TIMER    
             self.end_turn_btn()
             if started:
-                self.draw_turn_timer(self.turn_start_time)
+                self._draw_turn_timer(self.turn_start_time)
 
             # Updating the main screen
             pg.display.flip()

@@ -7,10 +7,10 @@ from spell import Spell
 from abc import ABC, abstractmethod
 
 class Entity(pg.sprite.Sprite, ABC):
-    def __init__(self, game, tag, type, image, grid_pos, *groups):
+    def __init__(self, map, tag, type, image, grid_pos, *groups):
         super().__init__(*groups)
-        self.game = game
-        self.tag = tag       
+        self.tag = tag
+        self.map = map       
 
         # ENTITY RELATED DATA
         self.entity_data = entities[type]
@@ -21,14 +21,17 @@ class Entity(pg.sprite.Sprite, ABC):
         self.current_health = self.max_health
         self.initiative = self.entity_data['initiative']
         self.health_bar = HealthBar(self.get_instance())
-        self.spells = [Spell(settings) for settings in self.entity_data["spells"]]
-
 
         # DRAW AND POSITIONING
         self.grid_pos = pg.Vector2(grid_pos)
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
         self.image = image
         self.rect = self.image.get_rect(topleft = self.draw_pos)
+
+        # SPELLS
+        self.spells = [Spell(self.get_instance(), settings) for settings in self.entity_data["spells"]]
+
+
 
 
         # GAMEPLAY VARIABLES
@@ -45,14 +48,11 @@ class Entity(pg.sprite.Sprite, ABC):
     def get_instance(self):
         return self
     
-    def clean_up(self):
-        self.moving = False
-        self.steps = []
-        self.directions = []
-        self.current_step = 0
+    
     
     def start_turn(self):
         self.playing = True
+        self.moving = True
         self.usable_mp = self.mp
         self.mp_used = 0
         self.ap_used = 0
@@ -82,7 +82,15 @@ class Entity(pg.sprite.Sprite, ABC):
             self.draw_pos
         )
         self.health_bar.draw(surface)
+   
+    def movement_clean_up(self):
+        self.steps = []
+        self.directions = []
+        self.current_step = 0
     
     @abstractmethod
     def update(self):
         pass
+
+    
+    
