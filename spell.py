@@ -17,7 +17,7 @@ class Spell:
             return True
         return False
 
-    def draw_spell_range(self):
+    def draw_spell_range(self, surface):
         if self.update_onwer_tile():
             set_range_tiles = set()
             set_range_tiles.add(self.owner_tile)
@@ -25,13 +25,13 @@ class Spell:
             self.range_tiles = set_range_tiles
 
         for tile in self.range_tiles:
-                pg.display.get_surface().blit(
+                surface.blit(
                     pg.image.load('assets/mouse/hover.png').convert_alpha(),
                     tile.draw_pos
                 )
         return self.range_tiles
         
-    def draw_spell_area(self, center):
+    def draw_spell_area(self, surface, center):
         set_are_tiles = set()
         set_are_tiles.add(center)
         self.get_area_by_depth(center, 0, set_are_tiles, self.area)

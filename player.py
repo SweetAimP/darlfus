@@ -49,10 +49,10 @@ class Player(Entity):
         if self.moving:
             self.draw_movement(surface)
         elif self.spell_casting:
-            range_tiles = self.spell_selected.draw_spell_range()
+            range_tiles = self.spell_selected.draw_spell_range(surface)
             hover_tile = self.map.get_hover_tile()
             if hover_tile and hover_tile in range_tiles:
-                self.spell_selected.draw_spell_area(hover_tile)
+                self.spell_selected.draw_spell_area(surface, hover_tile)
     
     def update(self):
         self.move()
