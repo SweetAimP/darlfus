@@ -9,7 +9,7 @@ SCREEN_SIZE = {
     "height":480
 }
 FPS = 60
-CHARACTERS_IMG = [
+ENTITIES_IMGS = [
     'assets/player/player.png',
     'assets/player/enemy.png'
 ]

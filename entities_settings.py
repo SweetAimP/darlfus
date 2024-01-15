@@ -1,5 +1,6 @@
 entities = {
     "warrior" : {
+        "size":32,
         "max_health": 250,
         "initiative": 100,
         "mp": 16,
@@ -10,6 +11,7 @@ entities = {
         ],
     },
     "archer" : {
+        "size":32,
         "max_health": 185,
         "initiative": 120,
         "mp": 16,

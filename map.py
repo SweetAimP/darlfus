@@ -16,7 +16,7 @@ class Map:
         for row in self.grid:
             for tile in row:
                 if tile.type == 1:
-                    for entity in self.game.entities.sprites():
+                    for entity in self.game.entity_group.sprites():
                         if hasattr(entity, 'grid_pos') and tile.grid_pos == entity.grid_pos:
                             tile.status = 2
                             break

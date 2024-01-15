@@ -2,8 +2,8 @@ import time
 from utils import *
 from settings import *
 from map import Map
-from entities import Entities
-from character import Character
+from entity_group import EntityGroup
+from player import Player
 from enemy import Enemy
 from mouse import Mouse
 from spell_menu import Spell_menu
@@ -20,19 +20,21 @@ class Game:
         # PLAYERS
         self.players_group = pg.sprite.Group()
         self.enemies_group = pg.sprite.Group()
-        self.entities = Entities()
-        Character((8,12), "warrior", pg.image.load(CHARACTERS_IMG[0]).convert_alpha(), 'player', self.entities, self.players_group)
-        Enemy(self.__get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.entities, self.enemies_group)
+        self.entity_group = EntityGroup()
+        Player(self._get_instance, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group)
+        Player(self._get_instance, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group)
+
+        # Enemy(self._get_instance(), (2,2), "archer", pg.image.load(CHARACTERS_IMG[1]).convert_alpha(), 'npc', self.entities, self.enemies_group)
                 
         # MAP
-        self.map = Map(self.__get_instance(),'map.txt')
+        self.map = Map(self._get_instance(),'map.txt')
         self.draw_base_grid()
 
         # CONTROLS
-        self.mouse = Mouse(self.__get_instance())
+        self.mouse = Mouse(self._get_instance())
        
         # GAMEPLAY VARIABLES
-        self.turn_order = sorted( self.entities, key=lambda entity: entity.initiative, reverse=True)
+        self.turn_order = sorted( self.entity_group, key=lambda entity: entity.initiative, reverse=True)
         self.turn_start_time = None
         self.current_player_index = 0
         self.turn_time_limit = 30
@@ -41,10 +43,10 @@ class Game:
         # INITIALIZATON FORCED
         self.turn_order[0].playing = True
         self.spells_menu.create_spell_rects(len(self.current_player.spells))
-        self.map.grid_group.update(self.entities)
+        self.map.grid_group.update(self.entity_group)
         
         
-    def __get_instance(self):
+    def _get_instance(self):
         return self
     
     def get_current_player(self):
@@ -89,7 +91,10 @@ class Game:
     def run(self):
         self.turn_start_time = time.time()
         start_game = time.time()
+        started = False
         while True:
+            if time.time() - start_game > 5:
+                started = True
             # Clearing the screen
             self.screen.fill('black')
             self.draw_base_grid()
@@ -112,13 +117,14 @@ class Game:
             self.mouse.draw()
 
             # ENTITIES
-            if time.time() - start_game > 5:
-                self.entities.update()
-            self.entities.draw(self.screen)
+            if started:
+                self.entity_group.update()
+            self.entity_group.draw(self.screen)
             
             # TURN TIMER    
             self.end_turn_btn()
-            self.draw_turn_timer(self.turn_start_time)
+            if started:
+                self.draw_turn_timer(self.turn_start_time)
 
             # Updating the main screen
             pg.display.flip()

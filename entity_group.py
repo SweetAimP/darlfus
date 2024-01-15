@@ -1,6 +1,6 @@
 import pygame as pg
 
-class Entities(pg.sprite.Group):
+class EntityGroup(pg.sprite.Group):
     def __init__(self) -> None:
         super().__init__()
 
