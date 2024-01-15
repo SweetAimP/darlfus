@@ -13,8 +13,9 @@ class Tile(pg.sprite.Sprite):
         self.tiles_types = ['assets/tiles/void.png','assets/tiles/basic_tile.png']
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + GRID_DRAW_OFFSET
         self.image = pg.image.load(self.tiles_types[self.type]).convert_alpha()
-        self.hover_img = pg.image.load("assets/mouse/hover.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=self.draw_pos)
+        self.hover_img = pg.image.load("assets/tiles/hover.png").convert_alpha()
+        self.area_image = pg.image.load('assets/tiles/spell_hover.png').convert_alpha()
     
     def set_status(self):
         if self.type == 1:

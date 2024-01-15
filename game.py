@@ -38,7 +38,7 @@ class Game:
         self.turn_order = sorted( self.entity_group, key=lambda entity: entity.initiative, reverse=True)
         self.turn_start_time = None
         self.current_player_index = 0
-        self.turn_time_limit = 30
+        self.turn_time_limit = 10
         self.current_player = self.get_current_player()
 
         # INITIALIZATON FORCED
@@ -61,6 +61,7 @@ class Game:
             pg.draw.line(self.screen,'grey',(j*gap,0), (j*gap,SCREEN_SIZE['width']))
     
     def switch_turn(self):
+        self.current_player.end_turn()
         self.current_player_index = (self.current_player_index + 1) % len(self.turn_order)
         self.current_player = self.get_current_player()
         self.spells_menu.create_spell_rects(len(self.current_player.spells))
@@ -97,11 +98,7 @@ class Game:
 
     def run(self):
         self.turn_start_time = time.time()
-        start_game = time.time()
-        started = False
         while True:
-            if time.time() - start_game > 5:
-                started = True
             # Clearing the screen
             self.screen.fill('black')
             self.draw_base_grid()

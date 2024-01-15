@@ -61,9 +61,11 @@ class Map:
         point = self.game.mouse.get_pos()
         for row in self.grid:
             for tile in row:
-                if tile.status == 0:
                     if tile.rect.collidepoint(point) and tile.draw_pos.distance_to(point) < 20:
-                        return tile
+                        if tile.status == 0:
+                            return tile
+                        elif tile.status != 0 and self.game.current_player.spell_casting:
+                            return tile
         return False
     
     def get_walking_path(self):

@@ -2,7 +2,7 @@ from utils import *
 class Spell:
     def __init__(self, owner, spell_settings):
         self.owner = owner
-        self.owner_tile = self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]
+        self.owner_tile = None
         self.type = spell_settings["type"]
         self.area = spell_settings["area"]
         self.range = spell_settings["range"]
@@ -11,8 +11,6 @@ class Spell:
         self.range_tiles = []
         self.area_tiles = []
         self.spell_area_center = None
-        self.range_image = pg.image.load('assets/mouse/hover.png').convert_alpha()
-        self.area_image = pg.image.load('assets/mouse/spell_hover.png').convert_alpha()
 
     def _update_onwer_tile(self):
         if self.owner_tile != self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]:
@@ -35,7 +33,7 @@ class Spell:
 
         for tile in self.range_tiles:
                 surface.blit(
-                    self.range_image,
+                    tile.hover_img,
                     tile.draw_pos
                 )
         return self.range_tiles
@@ -49,7 +47,7 @@ class Spell:
             
         for tile in self.area_tiles:
             surface.blit(
-                self.area_image,
+                tile.area_image,
                 tile.draw_pos
             )
         return self.area_tiles

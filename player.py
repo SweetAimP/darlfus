@@ -10,7 +10,14 @@ class Player(Entity):
         self.spell_casting = False
         self.spell_selected = None
         self.clicked = False
-
+    
+    def end_turn(self):
+        self.playing = False
+        self.spell_casting = False
+        self.moving = False
+        self.clicked = False
+        self.movement_clean_up()
+        
     def move(self):
         if len(self.steps) > 0 and self.usable_mp > 0:
             self.grid_pos = self.steps[self.current_step].grid_pos
@@ -41,11 +48,6 @@ class Player(Entity):
                     return False
 
     def draw(self, surface):
-        surface.blit(
-            self.image,
-            self.draw_pos
-        )
-        self.health_bar.draw(surface)
         if self.moving:
             self.draw_movement(surface)
         elif self.spell_casting:
@@ -53,9 +55,15 @@ class Player(Entity):
             hover_tile = self.map.get_hover_tile()
             if hover_tile and hover_tile in range_tiles:
                 self.spell_selected.draw_spell_area(surface, hover_tile)
+        surface.blit(
+            self.image,
+            self.draw_pos
+        )
+        self.health_bar.draw(surface)
     
     def update(self):
-        self.move()
+        if self.clicked:
+            self.move()
         self._update_draw_pos()
         self._update_rect()
         self._update_ap()

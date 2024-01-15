@@ -47,14 +47,12 @@ class Entity(pg.sprite.Sprite, ABC):
 
     def get_instance(self):
         return self
-    
-    
-    
+     
     def start_turn(self):
         self.playing = True
         self.moving = True
-        self.usable_mp = self.mp
         self.mp_used = 0
+        self.usable_mp = self.mp
         self.ap_used = 0
         self.usable_ap = self.ap
 
@@ -92,5 +90,7 @@ class Entity(pg.sprite.Sprite, ABC):
     def update(self):
         pass
 
-    
+    @abstractmethod
+    def end_turn(self):
+        pass
     
