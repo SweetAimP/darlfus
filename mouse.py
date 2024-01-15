@@ -16,7 +16,7 @@ class Mouse:
                 if current_player.tag  == 'player':
                     # Access all the event hanlders from entities
                     if self.game.end_turn_rect.collidepoint(self.get_pos()):
-                        current_player.playing = False
+                        current_player.playing = not current_player.playing
                     elif self.game.get_spell_selected(self.get_pos()):  
                         current_player.spell_casting = not current_player.spell_casting
                         current_player.moving = not current_player.moving

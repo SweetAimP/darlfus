@@ -119,14 +119,12 @@ class Game:
             self.map.draw()
 
             # ENTITIES
-            if started:
-                self.entity_group.update()
+            self.entity_group.update()
             self.entity_group.draw(self.screen)
             
             # TURN TIMER    
             self.end_turn_btn()
-            if started:
-                self._draw_turn_timer(self.turn_start_time)
+            self._draw_turn_timer(self.turn_start_time)
 
             # Updating the main screen
             pg.display.flip()
