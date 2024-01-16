@@ -24,6 +24,15 @@ class Spell:
             return True
         return False
     
+    def _draw_tile_hovers(self, surface, tiles, type):
+        for tile in tiles:
+                if tile.status in (0,2):
+                    img = tile.hover_img if type == 'range' else (tile.area_image if type == 'area' else False)
+                    surface.blit(
+                        img,
+                        tile.draw_pos
+                    )
+                    
     def draw_spell_range(self, surface):
         if self._update_onwer_tile():
             set_range_tiles = set()
@@ -31,11 +40,8 @@ class Spell:
             self.get_area_by_depth(self.owner_tile, 0, set_range_tiles, self.range)
             self.range_tiles = set_range_tiles
 
-        for tile in self.range_tiles:
-                surface.blit(
-                    tile.hover_img,
-                    tile.draw_pos
-                )
+        self._draw_tile_hovers(surface, self.range_tiles, 'range')
+        
         return self.range_tiles
         
     def draw_spell_area(self, surface, center):
@@ -43,12 +49,11 @@ class Spell:
             set_are_tiles = set()
             set_are_tiles.add(center)
             self.get_area_by_depth(center, 0, set_are_tiles, self.area)
-            self.area_tiles =  set_are_tiles
-        for tile in self.area_tiles:
-            surface.blit(
-                tile.area_image,
-                tile.draw_pos
-            )
+            self.area_tiles =  set_are_tiles if center.status in (0,2) else None
+        
+        if self.area_tiles:
+            self._draw_tile_hovers(surface, self.area_tiles, 'area')
+    
         return self.area_tiles
 
     def get_area_by_depth(self, center, depth, set_tiles, end_flag):

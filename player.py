@@ -28,25 +28,29 @@ class Player(Entity):
                 self.end_action()
                 self.movement_clean_up()
 
-
     def _cast_dmg_spell(self):
-        self.map.get_attacked_entities(self.spell_selected.area_tiles, self.spell_selected.spell_dmg)
+        if self.spell_selected.spell_area_center.status == 0 or self.spell_selected.spell_area_center.status == 2:
+            return self.map.get_attacked_entities(self.spell_selected.area_tiles, self.spell_selected.spell_dmg)
+        else:
+            return False
     
     def _cast_mov_spell(self):
-        target_tile = list(self.spell_selected.area_tiles)[0]
+        target_tile = self.spell_selected.spell_area_center
         if target_tile.status == 0:
             self.grid_pos = target_tile.grid_pos
             return True
         return False
     
     def cast_spell(self):
+        casted = False
         if self.usable_ap >= self.spell_selected.ap_cost:
             if self.spell_selected.type == "dmg":
-                self._cast_dmg_spell()
+                casted = self._cast_dmg_spell()
             elif self.spell_selected.type == "mov":
-                self._cast_mov_spell()
+                casted = self._cast_mov_spell()
 
-            self._update_ap(self.spell_selected.ap_cost)
+            if casted:
+                self._update_ap(self.spell_selected.ap_cost)
         self.end_action()
              
     def end_action(self):
