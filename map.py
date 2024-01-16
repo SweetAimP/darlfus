@@ -77,6 +77,8 @@ class Map:
             else:
                 return False, False
         else:
+            if self.game.current_player.start_action_flag:
+                self.game.current_player.end_action()
             return False, False
 
     def get_current_player_tile(self, player):

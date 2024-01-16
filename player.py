@@ -28,6 +28,7 @@ class Player(Entity):
                 self.end_action()
                 self.movement_clean_up()
 
+
     def _cast_dmg_spell(self):
         self.map.get_attacked_entities(self.spell_selected.area_tiles, self.spell_selected.spell_dmg)
     
@@ -47,12 +48,12 @@ class Player(Entity):
 
             self._update_ap(self.spell_selected.ap_cost)
         self.end_action()
-        
-        
+             
     def end_action(self):
         self.start_action_flag = not self.start_action_flag
         if self.spell_casting:
             self.spell_casting = not self.spell_casting
+            self.moving = not self.moving
         
     def start_action(self):
         self.start_action_flag = not self.start_action_flag

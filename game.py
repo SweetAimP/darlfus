@@ -38,7 +38,7 @@ class Game:
         self.turn_order = sorted( self.entity_group, key=lambda entity: entity.initiative, reverse=True)
         self.turn_start_time = None
         self.current_player_index = 0
-        self.turn_time_limit = 10
+        self.turn_time_limit = 20
         self.current_player = self.get_current_player()
 
         # INITIALIZATON FORCED
