@@ -3,7 +3,7 @@ entities = {
         "size":32,
         "max_health": 250,
         "initiative": 100,
-        "mp": 6,
+        "mp": 10,
         "ap": 10,
         "spells" :[
             {"name": "S1", "type": "dmg" ,"range":2, "area":1, "damage": 35, "ap_cost": 3, "max_usages": 2},
@@ -14,7 +14,7 @@ entities = {
         "size":32,
         "max_health": 185,
         "initiative": 120,
-        "mp": 6,
+        "mp": 10,
         "ap": 10,
         "spells" :[
             {"name": "S1", "type": "dmg", "range":10, "area":0, "damage": 15, "ap_cost": 5, "max_usages": 1},
