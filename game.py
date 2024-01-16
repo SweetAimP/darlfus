@@ -29,7 +29,7 @@ class Game:
         
         # PLAYERS
         Player(self.map, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group ,self.players_group)
-        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group ,self.players_group)
+        Enemy(self._get_instance(), 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group ,self.enemies_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())

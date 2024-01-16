@@ -17,9 +17,9 @@ entities = {
         "mp": 16,
         "ap": 10,
         "spells" :[
-            {"type": "dmg", "range":10, "area":0, "damage": 15, "ap_cost": 3},
+            {"type": "dmg", "range":10, "area":0, "damage": 15, "ap_cost": 5},
             {"type": "dmg", "range":8, "area":2, "damage": 8, "ap_cost": 3},
-            {"type": "dmg", "range":7, "area":5, "damage": 8, "ap_cost": 7}
+            {"type": "dmg", "range":7, "area":5, "damage": 8, "ap_cost": 2}
         ],
     }
 }

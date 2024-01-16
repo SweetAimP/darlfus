@@ -18,14 +18,14 @@ def isometric_to_cartisian(isometric):
     cartisian_pos.y = int((2 * isometric.y - isometric.x) / 2)
     return cartisian_pos
 
-def distance_to(posicion_inicial, posicion_final):
-        x_inicial, y_inicial = posicion_inicial
-        x_final, y_final = posicion_final
+def distance_to(initial_pos, final_pos):
+        initial_x, initial_y = initial_pos
+        final_x, final_y = final_pos
 
-        distancia_x = abs(x_final - x_inicial)
-        distancia_y = abs(y_final - y_inicial)
+        distance_x = abs(final_x - initial_x)
+        distance_y = abs(final_y - initial_y)
 
-        return distancia_x + distancia_y
+        return distance_x + distance_y
 
 def check_facing(vector_to, vector_from):
         angle_radians = math.atan2(vector_to.y - vector_from.y, vector_to.x - vector_from.x)
