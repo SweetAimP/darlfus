@@ -24,6 +24,7 @@ class Entity(pg.sprite.Sprite, ABC):
 
         # DRAW AND POSITIONING
         self.grid_pos = pg.Vector2(grid_pos)
+        self.tile = self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
         self.image = image
         self.rect = self.image.get_rect(topleft = self.draw_pos)
@@ -35,15 +36,17 @@ class Entity(pg.sprite.Sprite, ABC):
 
 
         # GAMEPLAY VARIABLES
-        self.mp_used = 0
         self.usable_mp= self.mp
-        self.ap_used = 0
         self.usable_ap = self.ap
         self.playing = False
         self.moving = False
         self.steps = []
         self.directions = []
         self.current_step = 0
+
+    def update_tile(self):
+        if self.tile != self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]:
+            self.tile = self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
 
     def get_instance(self):
         return self
@@ -68,11 +71,11 @@ class Entity(pg.sprite.Sprite, ABC):
     def _update_draw_pos(self):
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
 
-    def _update_ap(self):
-        self.usable_ap = self.ap - self.ap_used
+    def _update_ap(self, ap_used):
+        self.usable_ap -= ap_used
 
-    def _update_mp(self):
-        self.usable_mp = self.mp - self.mp_used
+    def _update_mp(self, mp_used):
+        self.usable_mp -= mp_used
     
     def draw(self, surface):
         surface.blit(

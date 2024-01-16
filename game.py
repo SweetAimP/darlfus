@@ -28,8 +28,8 @@ class Game:
         self.map.make_grid('map.txt')
         
         # PLAYERS
-        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group)
-        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group)
+        Player(self.map, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(8,12), self.entity_group ,self.players_group)
+        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,10), self.entity_group ,self.players_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())
@@ -92,7 +92,8 @@ class Game:
         for spell_index, spell_rect in enumerate(self.spells_menu.spell_rects):
             if spell_rect.collidepoint(mouse_pos):
                 self.current_player.spell_selected = self.current_player.spells[spell_index]
-                return True
+                if self.current_player.usable_ap >= self.current_player.spell_selected.ap_cost:
+                    return True
         return False
 
     def run(self):

@@ -82,6 +82,12 @@ class Map:
     def get_current_player_tile(self, player):
         return self.grid[int(player.grid_pos.y)][int(player.grid_pos.x)]
     
+    def get_attacked_entities(self, cast_area, spell_dmg):
+        for enemy in self.game.players_group.sprites():
+            if enemy.tile in cast_area:
+                enemy.take_damage(spell_dmg)
+        return True
+        
     def update(self):
         self.update_busy_tiles()
         self.update_neightbors()

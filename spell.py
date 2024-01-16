@@ -8,13 +8,13 @@ class Spell:
         self.range = spell_settings["range"]
         self.spell_dmg = spell_settings["damage"]
         self.ap_cost = spell_settings["ap_cost"]
-        self.range_tiles = []
-        self.area_tiles = []
+        self.range_tiles = None
+        self.area_tiles = None
         self.spell_area_center = None
 
     def _update_onwer_tile(self):
-        if self.owner_tile != self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]:
-            self.owner_tile = self.owner.map.grid[int(self.owner.grid_pos[1])][int(self.owner.grid_pos[0])]
+        if self.owner_tile != self.owner.tile:
+            self.owner_tile = self.owner.tile
             return True
         return False
     
@@ -44,7 +44,6 @@ class Spell:
             set_are_tiles.add(center)
             self.get_area_by_depth(center, 0, set_are_tiles, self.area)
             self.area_tiles =  set_are_tiles
-            
         for tile in self.area_tiles:
             surface.blit(
                 tile.area_image,
