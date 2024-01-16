@@ -3,6 +3,8 @@ class Spell:
     def __init__(self, owner, spell_settings):
         self.owner = owner
         self.owner_tile = None
+        self.max_usages = spell_settings["max_usages"]
+        self.name = spell_settings["name"]
         self.type = spell_settings["type"]
         self.area = spell_settings["area"]
         self.range = spell_settings["range"]

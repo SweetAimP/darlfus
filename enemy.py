@@ -21,46 +21,44 @@ class Enemy(Entity):
                 self.end_action()
                 self.movement_clean_up()
     
-    def knapsack_optimize_value(self, items, capacity):
+    def travelers_bag(self, items, capacity):
         n = len(items)
         dp = [[0] * (capacity + 1) for _ in range(n + 1)]
 
         for i in range(1, n + 1):
             for w in range(capacity + 1):
-                if items[i - 1].ap_cost <= w:
-                    dp[i][w] = max(dp[i - 1][w], items[i - 1].spell_dmg + dp[i - 1][w - items[i - 1].ap_cost])
-                else:
-                    dp[i][w] = dp[i - 1][w]
+                for q in range(min(items[i - 1].max_usages, w // items[i - 1].ap_cost) + 1):
+                    if q * items[i - 1].ap_cost <= w:
+                        dp[i][w] = max(dp[i][w], q * items[i - 1].spell_dmg + dp[i - 1][w - q * items[i - 1].ap_cost])
 
         selected_items = []
-        total_cost = 0
-        total_value = dp[n][capacity]
         w = capacity
+        used_quantities = {item: 0 for item in items}
+        
         for i in range(n, 0, -1):
-            if dp[i][w] != dp[i - 1][w]:
-                selected_items.append(items[i - 1])
-                total_cost += items[i - 1].ap_cost
-                w -= items[i - 1].ap_cost
+            for q in range(min(items[i - 1].max_usages, w // items[i - 1].ap_cost), 0, -1):
+                while w >= q * items[i - 1].ap_cost and dp[i][w] == q * items[i - 1].spell_dmg + dp[i - 1][w - q * items[i - 1].ap_cost]:
+                    selected_items.extend([items[i - 1]] * q)
+                    w -= q * items[i - 1].ap_cost
+                    used_quantities[items[i - 1]] += q
 
         selected_items.reverse()
-        return selected_items, total_cost, total_value
+        total_value = dp[n][capacity]
+        
+        return selected_items, total_value
 
     def take_action(self):
         self.thinking = True
         capacity = self.ap
-        items = []
-        for spell in sorted(self.spells, key=lambda spell:spell.spell_dmg, reverse=True):
+        spells = []
+        for spell in self.spells:
             for player in self.game.players_group.sprites():
                 if distance_to(self.grid_pos, player.grid_pos) <= spell.range:
-                    items.append(spell)
-                    
+                    spells.append(spell)
         
-        selected_items, total_cost, total_value = self.knapsack_optimize_value(items, capacity)
-        print("Selected items:")
-        for item in selected_items:
-            print(f"Value: {item.spell_dmg}, Cost: {item.ap_cost}")
-        print("Total cost:", total_cost)
-        print("Total value:", total_value)
+        selected_items, total_value = self.travelers_bag(spells, capacity)
+        
+        
 
 
                 
