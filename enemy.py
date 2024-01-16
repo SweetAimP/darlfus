@@ -18,8 +18,8 @@ class Enemy(Entity):
             else:
                 mp_used = len(self.steps)
                 self._update_mp(mp_used)
-                self.end_action()
                 self.movement_clean_up()
+                self.end_turn()
     
     def travelers_bag(self, items, capacity):
         n = len(items)
@@ -49,27 +49,46 @@ class Enemy(Entity):
 
     def take_action(self):
         self.thinking = True
-        capacity = self.ap
-        spells = []
+        # capacity = self.ap
+        # spells = []
+        # target = None
+        # for spell in self.spells:
+        #     for player in self.game.players_group.sprites():
+        #         if distance_to(self.grid_pos, player.grid_pos) <= spell.range:
+        #             spells.append(spell)
+        #             if target != player:
+        #                 target = player
+        
+        # selected_items, total_value = self.travelers_bag(spells, capacity)
         for spell in self.spells:
             for player in self.game.players_group.sprites():
-                if distance_to(self.grid_pos, player.grid_pos) <= spell.range:
-                    spells.append(spell)
-        
-        selected_items, total_value = self.travelers_bag(spells, capacity)
-        
-        
+                distance = distance_to(self.grid_pos, player.grid_pos)
+                if distance > spell.range:
+                    steps = int(distance - spell.range)
+                    recons_path, _ = self.map.get_walking_path(player.tile)
+                    if not self.steps:
+                        if recons_path:
+                            for node in recons_path[:steps]:
+                                self.game.screen.blit(
+                                    node.hover_img,
+                                    node.rect.topleft
+                                )
+                            self.steps = recons_path[:steps]
+                            self.directions = _
 
-
-                
-            
+        self.moving = True   
 
     def update(self):
+        self.update_tile()
         if self.playing:
             if not self.thinking:
                 self.take_action()
-            else:
-                print("Thinking...")
+            elif self.moving:
+                self.move()
+        self._update_draw_pos()
+        self._update_rect()
+
         
     def end_turn(self):
-        return super().end_turn()
+        self.thinking = not self.thinking
+        self.playing = not self.playing

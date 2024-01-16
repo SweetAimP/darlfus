@@ -68,24 +68,35 @@ class Map:
                             return tile
         return False
     
-    def get_walking_path(self):
-        end = self.get_hover_tile()
-        if end and distance_to(self.game.current_player.grid_pos,end.grid_pos) <= self.game.current_player.usable_mp:
-            start = self.game.map.get_current_player_tile(self.game.turn_order[self.game.current_player_index])
+    def _call_pathfinder(self,start, end):
+        if start != end:
+            return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
+        else:
+            return False, False
+         
+    def get_walking_path(self, end = False):
+        end = self.get_hover_tile() if not end else end
+        start = self.game.current_player.tile
+
+        if end and distance_to(self.game.current_player.grid_pos,end.grid_pos) <= self.game.current_player.usable_mp and self.game.current_player.tag == 'player':
+            #self._call_pathfinder(start,end)
+            if start != end:
+                return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
+            else:
+                return False, False
+        elif self.game.current_player.tag == 'npc':
+            #self._call_pathfinder(start,end)
             if start != end:
                 return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
             else:
                 return False, False
         else:
-            if self.game.current_player.start_action_flag:
+            if self.game.current_player.tag == 'player' and self.game.current_player.start_action_flag:
                 self.game.current_player.end_action()
             return False, False
-
-    def get_current_player_tile(self, player):
-        return self.grid[int(player.grid_pos.y)][int(player.grid_pos.x)]
     
     def get_attacked_entities(self, cast_area, spell_dmg):
-        for enemy in self.game.players_group.sprites():
+        for enemy in self.game.enemies_group.sprites():
             if enemy.tile in cast_area:
                 enemy.take_damage(spell_dmg)
         return True
