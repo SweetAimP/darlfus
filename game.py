@@ -45,8 +45,7 @@ class Game:
         self.turn_order[0].start_turn()
         self.spells_menu.create_spell_rects(len(self.current_player.spells))
         self.map.grid_group.update(self.entity_group)
-        
-        
+             
     def _get_instance(self):
         return self
     
@@ -110,7 +109,6 @@ class Game:
             if not self.current_player.playing:
                 self.switch_turn()
             
-
             # DRAWING MAP TILES
             self.map.update()
             self.map.draw()
