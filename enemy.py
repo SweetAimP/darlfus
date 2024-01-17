@@ -84,15 +84,16 @@ class Enemy(Entity):
         )
         
     def _move(self, target, steps):
-        target_tile = self.map.get_target_tile(target)
-        recons_path, _ = self.map.get_walking_path(target_tile)
-        if not self.steps:
-            if recons_path:
-                self.steps = recons_path[:steps]
-                self.directions = _
-                return True
-            else:
-                return False
+        if steps > 0:
+            target_tile = self.map.get_target_tile(target)
+            recons_path, _ = self.map.get_walking_path(target_tile)
+            if not self.steps:
+                if recons_path:
+                    self.steps = recons_path[:steps]
+                    self.directions = _
+                    return True
+                else:
+                    return False
 
     def _cast_spell(self, target, spell):
         target.take_damage(spell.spell_dmg)
@@ -112,22 +113,21 @@ class Enemy(Entity):
                 if distance_to(self.grid_pos, closest_target.grid_pos) <= minimun_ranged_combo_action.range:
                     for spell in best_dmg_combo:
                         self._cast_spell(closest_target, spell)
-                    self.casted = True
                 else:
-                    steps = distance_closest_target - minimun_ranged_combo_action.range
+                    steps = min(self.usable_mp, distance_closest_target - minimun_ranged_combo_action.range)
                     if self._move(closest_target, steps):
                         self.moving = True
                         self.thinking = False
                     else:
-                        print("IDK what's happening")
-        if self.casted:
-            if self.usable_mp > 0:
+                        self.end_turn()
+
+        elif self.usable_mp > 0:
                 farthest_tile = self.map.get_farthest_tile(closest_target)
                 if self._move(farthest_tile, self.usable_mp):
                         self.moving = True
                         self.thinking = False
-            else:
-                self.end_turn()
+        else:
+            self.end_turn()
 
     def update(self):
         if self.playing:
@@ -143,5 +143,4 @@ class Enemy(Entity):
     def end_turn(self):
         self.playing = False
         self.moving = False
-        self.casted = False
         self.thinking = True
