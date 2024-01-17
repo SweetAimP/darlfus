@@ -108,17 +108,17 @@ class Enemy(Entity):
         if self.usable_ap >= self.min_dmg_ap_req:
             best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap) # Conditioned if movement is needed (TODO)
             minimun_ranged_combo_action = self._get_minimun_spell_range(best_dmg_combo)
-            if closest_target == lowest_hp_target:
-                if distance_to(self.grid_pos, closest_target.grid_pos) <= minimun_ranged_combo_action.range:
-                    for spell in best_dmg_combo:
-                        self._cast_spell(closest_target, spell)
+            # if closest_target == lowest_hp_target:
+            if distance_to(self.grid_pos, closest_target.grid_pos) <= minimun_ranged_combo_action.range:
+                for spell in best_dmg_combo:
+                    self._cast_spell(closest_target, spell)
+            else:
+                steps = min(self.usable_mp, distance_closest_target - minimun_ranged_combo_action.range)
+                if self._move(closest_target, steps):
+                    self.moving = True
+                    self.thinking = False
                 else:
-                    steps = min(self.usable_mp, distance_closest_target - minimun_ranged_combo_action.range)
-                    if self._move(closest_target, steps):
-                        self.moving = True
-                        self.thinking = False
-                    else:
-                        self.end_turn()
+                    self.end_turn()
 
         elif self.usable_mp > 0:
                 farthest_tile = self.map.get_farthest_tile(closest_target)
