@@ -19,7 +19,6 @@ class Enemy(Entity):
         self.thinking = True
         self.casted = False
     
-
     def move(self):
         if len(self.steps) > 0 and self.usable_mp > 0:
             self.grid_pos = self.steps[self.current_step].grid_pos

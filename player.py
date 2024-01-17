@@ -34,6 +34,12 @@ class Player(Entity):
     
     def _get_casted_times(self, spell):
         if spell.name in self.casted_spells:
+            return self.casted_spells[spell.name]
+        else:
+            return 0
+
+    def _increase_casted_times(self, spell):
+        if spell.name in self.casted_spells:
             if self.casted_spells[spell.name] < spell.max_usages:
                 self.casted_spells[spell.name] += 1
                 return True
@@ -42,7 +48,7 @@ class Player(Entity):
         else:
             self.casted_spells[spell.name] = 1
             return True
-
+        
     def _cast_dmg_spell(self):
         if self.spell_selected.spell_area_center.status == 0 or self.spell_selected.spell_area_center.status == 2:
             return self.map.get_attacked_entities(self.spell_selected.area_tiles, self.spell_selected.spell_dmg)
@@ -58,14 +64,15 @@ class Player(Entity):
     
     def cast_spell(self):
         casted = False
-        if self.usable_ap >= self.spell_selected.ap_cost and self._get_casted_times(self.spell_selected):
+        if self.usable_ap >= self.spell_selected.ap_cost and self.spell_selected.spell_area_center is not None and self._get_casted_times(self.spell_selected) < self.spell_selected.max_usages:
             if self.spell_selected.type == "dmg":
                 casted = self._cast_dmg_spell()
             elif self.spell_selected.type == "mov":
                 casted = self._cast_mov_spell()
-
-            if casted:
-                self._update_ap(self.spell_selected.ap_cost)
+        
+        if casted:
+            self._update_ap(self.spell_selected.ap_cost)
+            self._increase_casted_times(self.spell_selected)
         self.end_action()
              
     def end_action(self):
@@ -93,11 +100,15 @@ class Player(Entity):
                     return False
     
     def draw_spell_casting(self,surface):
-        range_tiles = self.spell_selected.draw_spell_range(surface)
-        hover_tile = self.map.get_hover_tile()
-        if hover_tile and hover_tile in range_tiles:
-            self.spell_selected.draw_spell_area(surface, hover_tile)
-                
+        if self._get_casted_times(self.spell_selected) < self.spell_selected.max_usages:
+            range_tiles = self.spell_selected.draw_spell_range(surface)
+            hover_tile = self.map.get_hover_tile()
+            if hover_tile and hover_tile in range_tiles:
+                self.spell_selected.draw_spell_area(surface, hover_tile)
+            else:
+                self.spell_selected.spell_area_center = None
+                self.spell_selected.area_tiles = None
+             
     def draw(self, surface):
         if self.moving:
             self.draw_movement(surface)

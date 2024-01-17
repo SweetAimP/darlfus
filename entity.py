@@ -32,9 +32,6 @@ class Entity(pg.sprite.Sprite, ABC):
         # SPELLS
         self.spells = [Spell(self.get_instance(), settings) for settings in self.entity_data["spells"]]
 
-
-
-
         # GAMEPLAY VARIABLES
         self.usable_mp= self.mp
         self.usable_ap = self.ap

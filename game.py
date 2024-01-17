@@ -30,6 +30,10 @@ class Game:
         # PLAYERS
         Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(15,12), self.entity_group ,self.players_group)
         Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(6,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(7,4), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(8,6), self.entity_group ,self.enemies_group)
+
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())
