@@ -16,6 +16,7 @@ class Player(Entity):
     def end_turn(self):
         self.playing = False
         self.spell_casting = False
+        self.casted_spells = {}
         self.moving = False
         self.start_action_flag = False
         self.movement_clean_up()
@@ -35,7 +36,6 @@ class Player(Entity):
         if spell.name in self.casted_spells:
             if self.casted_spells[spell.name] < spell.max_usages:
                 self.casted_spells[spell.name] += 1
-                print(self.casted_spells)
                 return True
             else:
                 return False
