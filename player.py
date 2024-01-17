@@ -9,6 +9,9 @@ class Player(Entity):
         self.spell_casting = False
         self.spell_selected = None
         self.start_action_flag = False
+
+        # SPELL CAST COUNTING
+        self.casted_spells = {}
     
     def end_turn(self):
         self.playing = False
@@ -27,6 +30,18 @@ class Player(Entity):
                 self._update_mp(mp_used)
                 self.end_action()
                 self.movement_clean_up()
+    
+    def _get_casted_times(self, spell):
+        if spell.name in self.casted_spells:
+            if self.casted_spells[spell.name] < spell.max_usages:
+                self.casted_spells[spell.name] += 1
+                print(self.casted_spells)
+                return True
+            else:
+                return False
+        else:
+            self.casted_spells[spell.name] = 1
+            return True
 
     def _cast_dmg_spell(self):
         if self.spell_selected.spell_area_center.status == 0 or self.spell_selected.spell_area_center.status == 2:
@@ -43,7 +58,7 @@ class Player(Entity):
     
     def cast_spell(self):
         casted = False
-        if self.usable_ap >= self.spell_selected.ap_cost:
+        if self.usable_ap >= self.spell_selected.ap_cost and self._get_casted_times(self.spell_selected):
             if self.spell_selected.type == "dmg":
                 casted = self._cast_dmg_spell()
             elif self.spell_selected.type == "mov":

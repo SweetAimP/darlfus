@@ -92,7 +92,30 @@ class Map:
             if enemy.tile in cast_area:
                 enemy.take_damage(spell_dmg)
         return True
+
+    def get_farthest_tile(self, target):
+        farthest_tile = None
+        max_distance = 0
+
+        for row in self.grid:
+            for tile in row:
+                distance = distance_to(target.grid_pos, tile.grid_pos)
+                if distance > max_distance:
+                    max_distance = distance
+                    farthest_tile = tile
         
+        return farthest_tile
+
+    def get_target_tile(self, target):
+        if hasattr(target, 'tile'):
+            return target.tile
+        elif isinstance(target, pg.Vector2):
+            return self.grid[int(target[1])][int(target[0])]
+        elif isinstance(target, Tile):
+            return target
+        else:
+            return False
+
     def update(self):
         self.update_busy_tiles()
         self.update_neightbors()

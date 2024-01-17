@@ -25,7 +25,7 @@ def distance_to(initial_pos, final_pos):
         distance_x = abs(final_x - initial_x)
         distance_y = abs(final_y - initial_y)
 
-        return distance_x + distance_y
+        return int(distance_x + distance_y)
 
 def check_facing(vector_to, vector_from):
         angle_radians = math.atan2(vector_to.y - vector_from.y, vector_to.x - vector_from.x)

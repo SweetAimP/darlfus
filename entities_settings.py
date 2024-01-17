@@ -19,7 +19,7 @@ entities = {
         "spells" :[
             {"name": "S1", "type": "dmg", "range":10, "area":0, "damage": 15, "ap_cost": 5, "max_usages": 1},
             {"name": "S2", "type": "dmg", "range":8, "area":2, "damage": 9, "ap_cost": 3, "max_usages": 2},
-            {"name": "S3", "type": "dmg", "range":8, "area":5, "damage": 8, "ap_cost": 3, "max_usages": 3}
+            {"name": "S3", "type": "mov", "range":3, "area":5, "damage": 8, "ap_cost": 3, "max_usages": 3}
         ],
     }
 }
