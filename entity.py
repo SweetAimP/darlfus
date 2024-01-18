@@ -10,10 +10,18 @@ class Entity(pg.sprite.Sprite, ABC):
     def __init__(self, map, tag, type, image, grid_pos, *groups):
         super().__init__(*groups)
         self.tag = tag
-        self.map = map       
+        self.type = type
+        self.map = map
+        self.action = 'idle'
+        self.actions = {
+            "idle" : True,
+            "moving" : False,
+            "pre_casting": False,
+            "spell_casting" : False
+        }       
 
         # ENTITY RELATED DATA
-        self.entity_data = entities[type]
+        self.entity_data = entities[self.type]
         self.size = self.entity_data['size']
         self.mp = self.entity_data['mp']
         self.ap = self.entity_data['ap']
@@ -41,6 +49,15 @@ class Entity(pg.sprite.Sprite, ABC):
         self.directions = []
         self.current_step = 0
 
+    def set_action(self, action):
+        if self.action != action:
+            self.action = action
+            for action_key in self.actions.keys():
+                if action == action_key:
+                    self.actions[action_key] = True
+                else:
+                    self.actions[action_key] = False
+
     def update_tile(self):
         if self.tile != self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]:
             self.tile = self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
@@ -50,7 +67,7 @@ class Entity(pg.sprite.Sprite, ABC):
      
     def start_turn(self):
         self.playing = True
-        self.moving = True
+        self.set_action('idle')
         self.mp_used = 0
         self.usable_mp = self.mp
         self.ap_used = 0
@@ -86,6 +103,17 @@ class Entity(pg.sprite.Sprite, ABC):
         self.directions = []
         self.current_step = 0
     
+    def move(self):
+        if len(self.steps) > 0 and self.usable_mp > 0:
+            self.grid_pos = self.steps[self.current_step].grid_pos
+            if self.current_step + 1 < len(self.steps):
+                self.current_step += 1
+            else:
+                mp_used = len(self.steps)
+                self._update_mp(mp_used)
+                self.set_action('idle')
+                self.movement_clean_up()
+
     @abstractmethod
     def update(self):
         pass

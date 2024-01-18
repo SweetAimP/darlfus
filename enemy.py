@@ -19,18 +19,6 @@ class Enemy(Entity):
         self.thinking = True
         self.casted = False
     
-    def move(self):
-        if len(self.steps) > 0 and self.usable_mp > 0:
-            self.grid_pos = self.steps[self.current_step].grid_pos
-            if self.current_step + 1 < len(self.steps):
-                self.current_step += 1
-            else:
-                mp_used = len(self.steps)
-                self._update_mp(mp_used)
-                self.movement_clean_up()
-                self.moving = False
-                self.thinking = True
-    
     def _set_spells_array(self):
         for spell in self.spells:
             if spell.type == 'dmg':
@@ -108,38 +96,37 @@ class Enemy(Entity):
         if self.usable_ap >= self.min_dmg_ap_req:
             best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap) # Conditioned if movement is needed (TODO)
             minimun_ranged_combo_action = self._get_minimun_spell_range(best_dmg_combo)
-            # if closest_target == lowest_hp_target:
-            if distance_to(self.grid_pos, closest_target.grid_pos) <= minimun_ranged_combo_action.range:
+            final_target = lowest_hp_target if distance_lowest_hp_target < minimun_ranged_combo_action.range + self.usable_mp else closest_target
+            distance_final_target = distance_to(self.grid_pos, final_target.grid_pos)
+            if distance_to(self.grid_pos, final_target.grid_pos) <= minimun_ranged_combo_action.range:
                 for spell in best_dmg_combo:
-                    self._cast_spell(closest_target, spell)
+                    self._cast_spell(final_target, spell)
             else:
-                steps = min(self.usable_mp, distance_closest_target - minimun_ranged_combo_action.range)
-                if self._move(closest_target, steps):
-                    self.moving = True
-                    self.thinking = False
+                steps = min(self.usable_mp, distance_final_target - minimun_ranged_combo_action.range)
+                if self._move(final_target, steps):
+                    self.set_action('moving')
                 else:
                     self.end_turn()
 
         elif self.usable_mp > 0:
                 farthest_tile = self.map.get_farthest_tile(closest_target)
                 if self._move(farthest_tile, self.usable_mp):
-                        self.moving = True
-                        self.thinking = False
+                        self.set_action('moving')
         else:
             self.end_turn()
 
     def update(self):
         if self.playing:
-            if self.thinking:
+            if self.actions['idle']:
                 self.take_action()
-            elif self.moving:
+            elif self.actions['moving']:
                 self.move()
-                self.update_tile()
 
+        # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
+        self.update_tile()
         self._update_draw_pos()
         self._update_rect()
       
     def end_turn(self):
         self.playing = False
-        self.moving = False
-        self.thinking = True
+        self.set_action('idle')

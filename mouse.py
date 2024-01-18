@@ -16,13 +16,16 @@ class Mouse:
                     # Access all the event hanlders from entities
                     if self.game.end_turn_rect.collidepoint(self.get_pos()):
                         current_player.end_turn()
+
                     elif self.game.get_spell_selected(self.get_pos()):  # Control the current player state (Moving / Spell-casting)
-                        current_player.moving = False
-                        current_player.spell_casting = True
-                    elif current_player.spell_casting:
-                        current_player.start_action()
-                    elif current_player.moving:
-                        current_player.start_action()
+                        current_player.set_action('pre_casting')
+
+                    elif current_player.actions['pre_casting']:
+                        current_player.set_action('spell_casting')
+                        
+                    elif current_player.actions['idle']:
+                        current_player.set_action('moving')
+
                         
     def get_pos(self):
         return pg.mouse.get_pos()

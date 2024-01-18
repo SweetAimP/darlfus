@@ -5,8 +5,8 @@ class Player(Entity):
     def __init__(self, map, tag, type, image, grid_pos, *groups):
         super().__init__(map, tag, type, image, grid_pos, *groups)
         self.map = map
+
         # FLAGS
-        self.spell_casting = False
         self.spell_selected = None
         self.start_action_flag = False
 
@@ -15,22 +15,8 @@ class Player(Entity):
     
     def end_turn(self):
         self.playing = False
-        self.spell_casting = False
         self.casted_spells = {}
-        self.moving = False
-        self.start_action_flag = False
         self.movement_clean_up()
-        
-    def move(self):
-        if len(self.steps) > 0 and self.usable_mp > 0:
-            self.grid_pos = self.steps[self.current_step].grid_pos
-            if self.current_step + 1 < len(self.steps):
-                self.current_step += 1
-            else:
-                mp_used = len(self.steps)
-                self._update_mp(mp_used)
-                self.end_action()
-                self.movement_clean_up()
     
     def _get_casted_times(self, spell):
         if spell.name in self.casted_spells:
@@ -73,13 +59,7 @@ class Player(Entity):
         if casted:
             self._update_ap(self.spell_selected.ap_cost)
             self._increase_casted_times(self.spell_selected)
-        self.end_action()
-             
-    def end_action(self):
-        self.start_action_flag = not self.start_action_flag
-        if self.spell_casting:
-            self.spell_casting = not self.spell_casting
-            self.moving = not self.moving
+        self.set_action('idle')
         
     def start_action(self):
         self.start_action_flag = not self.start_action_flag
@@ -88,12 +68,13 @@ class Player(Entity):
             recons_path, _ = self.map.get_walking_path()
             if not self.steps:
                 if recons_path:
-                    for node in recons_path:
-                        surface.blit(
-                            node.hover_img,
-                            node.rect.topleft
-                        )
-                    if self.start_action_flag:
+                    if self.actions['idle']:
+                        for node in recons_path:
+                            surface.blit(
+                                node.hover_img,
+                                node.rect.topleft
+                            )
+                    elif self.actions['moving']:
                         self.steps = recons_path
                         self.directions = _
                 else:
@@ -110,10 +91,11 @@ class Player(Entity):
                 self.spell_selected.area_tiles = None
              
     def draw(self, surface):
-        if self.moving:
-            self.draw_movement(surface)
-        elif self.spell_casting:
-            self.draw_spell_casting(surface)
+        if self.playing:
+            if self.actions['idle'] or self.actions['moving']:
+                self.draw_movement(surface)
+            elif self.actions['pre_casting']:
+                self.draw_spell_casting(surface)
 
         surface.blit(
             self.image,
@@ -122,11 +104,13 @@ class Player(Entity):
         self.health_bar.draw(surface)
     
     def update(self):
-        self.update_tile()
-        if self.start_action_flag:
-            if self.moving:
+        if self.playing:
+            if self.actions['moving']:
                 self.move()
-            elif self.spell_casting:
+            elif self.actions['spell_casting']:
                 self.cast_spell()
+        
+        # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
+        self.update_tile()
         self._update_draw_pos()
         self._update_rect()
