@@ -30,9 +30,11 @@ class Game:
         # PLAYERS
         Player(self.map, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(5,10), self.entity_group ,self.players_group)
         Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(9,7), self.entity_group ,self.players_group)
-
+        # ENEMIES
         Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,6), self.entity_group ,self.enemies_group)
-
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(5,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(7,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(9,6), self.entity_group ,self.enemies_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())
@@ -98,7 +100,12 @@ class Game:
                 if self.current_player.usable_ap >= self.current_player.spell_selected.ap_cost:
                     return True
         return False
-
+    
+    def Kill_entity(self, entity):
+        index = self.turn_order.index(entity)
+        self.turn_order.pop(index)
+        entity.kill()
+                
     def run(self):
         self.turn_start_time = time.time()
         while True:
