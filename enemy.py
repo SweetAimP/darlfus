@@ -89,14 +89,12 @@ class Enemy(Entity):
     def take_action(self):
         # Getting the closest and lowest hp targets
         closest_target = self._get_closest_target()
-        distance_closest_target = distance_to(self.grid_pos, closest_target.grid_pos)
         lowest_hp_target = self._get_lowest_hp_target()
-        distance_lowest_hp_target = distance_to(self.grid_pos, lowest_hp_target.grid_pos)
 
         if self.usable_ap >= self.min_dmg_ap_req:
             best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap) # Conditioned if movement is needed (TODO)
             minimun_ranged_combo_action = self._get_minimun_spell_range(best_dmg_combo)
-            final_target = lowest_hp_target if distance_lowest_hp_target < minimun_ranged_combo_action.range + self.usable_mp else closest_target
+            final_target = lowest_hp_target if distance_to(self.grid_pos, lowest_hp_target.grid_pos) < minimun_ranged_combo_action.range + self.usable_mp else closest_target
             distance_final_target = distance_to(self.grid_pos, final_target.grid_pos)
             if distance_to(self.grid_pos, final_target.grid_pos) <= minimun_ranged_combo_action.range:
                 for spell in best_dmg_combo:

@@ -1,4 +1,5 @@
 import pygame as pg
+from utils import distance_to
 import sys
 
 class Mouse:
@@ -24,7 +25,9 @@ class Mouse:
                         current_player.set_action('spell_casting')
                         
                     elif current_player.actions['idle']:
-                        current_player.set_action('moving')
+                        hover_tile = self.game.map.get_hover_tile()
+                        if hover_tile and distance_to(current_player.grid_pos,hover_tile.grid_pos) <= current_player.usable_mp:
+                            current_player.set_action('moving')
 
                         
     def get_pos(self):
