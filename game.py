@@ -28,9 +28,10 @@ class Game:
         self.map.make_grid('map.txt')
         
         # PLAYERS
-        Player(self, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(5,10), self.entity_group ,self.players_group)
+        Player(self, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(5,10), self.entity_group ,self.players_group)
         Player(self, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(9,7), self.entity_group ,self.players_group)
         # ENEMIES
+        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(19,6), self.entity_group ,self.enemies_group)
         Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,6), self.entity_group ,self.enemies_group)
 
         # CONTROLS
@@ -40,7 +41,7 @@ class Game:
         self.turn_order = sorted( self.entity_group, key=lambda entity: entity.initiative, reverse=True)
         self.turn_start_time = None
         self.current_player_index = 0
-        self.turn_time_limit = 10
+        self.turn_time_limit = 40
         self.current_player = self.get_current_player()
 
         # INITIALIZATON FORCED
@@ -102,7 +103,7 @@ class Game:
         index = self.turn_order.index(entity)
         self.turn_order.pop(index)
         entity.kill()
-                
+        
     def run(self):
         self.turn_start_time = time.time()
         while True:

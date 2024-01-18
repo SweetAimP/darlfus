@@ -79,7 +79,6 @@ class Entity(pg.sprite.Sprite, ABC):
             self.current_health -= dmg
         else:
             self.current_health = 0
-            self.kill()
             # self.game.Kill_entity(self)
 
     def _update_rect(self):
