@@ -28,13 +28,10 @@ class Game:
         self.map.make_grid('map.txt')
         
         # PLAYERS
-        Player(self.map, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(5,10), self.entity_group ,self.players_group)
-        Player(self.map, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(9,7), self.entity_group ,self.players_group)
+        Player(self, 'player', 'warrior',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(5,10), self.entity_group ,self.players_group)
+        Player(self, 'player', 'archer',pg.image.load(ENTITIES_IMGS[0]).convert_alpha(),(9,7), self.entity_group ,self.players_group)
         # ENEMIES
         Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(3,6), self.entity_group ,self.enemies_group)
-        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(5,6), self.entity_group ,self.enemies_group)
-        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(7,6), self.entity_group ,self.enemies_group)
-        Enemy(self._get_instance(), 'npc', 'archer',pg.image.load(ENTITIES_IMGS[1]).convert_alpha(),(9,6), self.entity_group ,self.enemies_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())

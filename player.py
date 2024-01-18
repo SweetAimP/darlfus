@@ -2,10 +2,8 @@ from entity import Entity
 from utils import *
 
 class Player(Entity):
-    def __init__(self, map, tag, type, image, grid_pos, *groups):
-        super().__init__(map, tag, type, image, grid_pos, *groups)
-        self.map = map
-
+    def __init__(self, game, tag, type, image, grid_pos, *groups):
+        super().__init__(game, tag, type, image, grid_pos, *groups)
         # FLAGS
         self.spell_selected = None
         self.start_action_flag = False

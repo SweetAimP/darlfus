@@ -7,11 +7,12 @@ from spell import Spell
 from abc import ABC, abstractmethod
 
 class Entity(pg.sprite.Sprite, ABC):
-    def __init__(self, map, tag, type, image, grid_pos, *groups):
+    def __init__(self, game, tag, type, image, grid_pos, *groups):
         super().__init__(*groups)
+        self.game = game
+        self.map = self.game.map
         self.tag = tag
         self.type = type
-        self.map = map
         self.action = 'idle'
         self.actions = {
             "idle" : True,
@@ -78,7 +79,8 @@ class Entity(pg.sprite.Sprite, ABC):
             self.current_health -= dmg
         else:
             self.current_health = 0
-            self.game.Kill_entity(self)
+            self.kill()
+            # self.game.Kill_entity(self)
 
     def _update_rect(self):
         self.rect.topleft = self.draw_pos
