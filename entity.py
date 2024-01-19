@@ -5,6 +5,7 @@ from settings import *
 from healthbar import HealthBar
 from spell import Spell
 from abc import ABC, abstractmethod
+from animation import Animation
 
 class Entity(pg.sprite.Sprite, ABC):
     def __init__(self, game, tag, type, image, grid_pos, *groups):
@@ -35,6 +36,22 @@ class Entity(pg.sprite.Sprite, ABC):
         self.grid_pos = pg.Vector2(grid_pos)
         self.tile = self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
+        # ANIMATION
+        self.duration = 6
+        self.extraction_structure =  dict({'sw':[],'se':[],'nw':[],'ne':[]})
+        self.idle_imgs = extrac_imgs_from_sheet('assets/entities/player/idle/wolf-idle.png',(4,4),self.extraction_structure,32,16)
+        self.run_imgs = extrac_imgs_from_sheet('assets/entities/player/walk/wolf-run.png',(8,4),self.extraction_structure,32,16)
+        self.animations = {
+            'idle': Animation(self.idle_imgs['sw'],duration=self.duration,loop=True),
+            'idle/se': Animation(self.idle_imgs['se'],duration=self.duration,loop=True),
+            'idle/nw': Animation(self.idle_imgs['nw'],duration=self.duration,loop=True),
+            'idle/ne': Animation(self.idle_imgs['ne'],duration=self.duration,loop=True),
+            'moving': Animation(self.run_imgs['sw'],duration=self.duration,loop=True),
+            'run/se': Animation(self.run_imgs['se'],duration=self.duration,loop=True),
+            'run/nw': Animation(self.run_imgs['nw'],duration=self.duration,loop=True),
+            'run/ne': Animation(self.run_imgs['ne'],duration=self.duration,loop=True)
+        }
+        self.animation = self.animations[self.action]
         self.image = image
         self.rect = self.image.get_rect(topleft = self.draw_pos)
 
@@ -56,6 +73,7 @@ class Entity(pg.sprite.Sprite, ABC):
             for action_key in self.actions.keys():
                 if action == action_key:
                     self.actions[action_key] = True
+                    self.animation = self.animations[self.action].copy()
                 else:
                     self.actions[action_key] = False
 

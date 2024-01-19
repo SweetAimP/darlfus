@@ -11,7 +11,7 @@ SCREEN_SIZE = {
 }
 FPS = 60
 ENTITIES_IMGS = [
-    'assets/entities/player.png',
+    'assets/entities/player/player.png',
     'assets/entities/enemy.png'
 ]
 TILE_IMAGES = [
