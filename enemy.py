@@ -4,8 +4,8 @@ from entity import Entity
 
 
 class Enemy(Entity):
-    def __init__(self, game, tag, type, image, grid_pos, *groups):
-        super().__init__(game, tag, type, image, grid_pos, *groups)
+    def __init__(self, game, tag, type, grid_pos, *groups):
+        super().__init__(game, tag, type, grid_pos, *groups)
         # SPELL TYPE ARRAY
         self.dmg_spells = []
         self.mov_spells = []

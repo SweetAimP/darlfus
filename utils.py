@@ -27,26 +27,18 @@ def distance_to(initial_pos, final_pos):
 
         return int(distance_x + distance_y)
 
-def extrac_imgs_from_sheet(sheet, frames, format, size, offset = 0):
-    new_json = dict(format)
+def extrac_imgs_from_sheet(sheet, frames, size):
     sheet_img = pg.image.load(sheet).convert_alpha()
-    img_size =  sheet_img.get_size()
-    mat = []
-
-    for index, j in enumerate(range(0,img_size[1], img_size[1]//frames[1])):
-        images = []
-        for i in range(0,img_size[0], img_size[0]//frames[0]):
-            temp_img = sheet_img.subsurface(
-                (i+offset,j+offset),
-                (size,size)
-            ) 
-            images.append(temp_img) 
-        mat.append(images)
-    
-    for index, key in enumerate(new_json.keys()):
-         new_json[key] = (mat[index])
-
-    return new_json
+    images = []
+    for i in range(0,frames): 
+        if i != 0:
+             i+1
+        temp_img = sheet_img.subsurface(
+             (i*size,0),
+             (size,size)
+        )
+        images.append(temp_img)
+    return images
 
 def check_facing(vector_to, vector_from):
         angle_radians = math.atan2(vector_to.y - vector_from.y, vector_to.x - vector_from.x)

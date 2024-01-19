@@ -2,8 +2,8 @@ from entity import Entity
 from utils import *
 
 class Player(Entity):
-    def __init__(self, game, tag, type, image, grid_pos, *groups):
-        super().__init__(game, tag, type, image, grid_pos, *groups)
+    def __init__(self, game, tag, type, grid_pos, *groups):
+        super().__init__(game, tag, type, grid_pos, *groups)
         
         # MOVEMENT IMAGE
         self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
@@ -114,9 +114,9 @@ class Player(Entity):
             elif self.actions['spell_casting']:
                 self.cast_spell()
         
-        # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
-        self.animation.update()
-        self.image = self.animation.img()
-        self.update_tile()
-        self._update_draw_pos()
-        self._update_rect()
+            # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
+            self.animation.update()
+            self.image = self.animation.img()
+            self.update_tile()
+            self._update_draw_pos()
+            self._update_rect()
