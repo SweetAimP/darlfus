@@ -4,6 +4,8 @@ from utils import *
 class Player(Entity):
     def __init__(self, game, tag, type, image, grid_pos, *groups):
         super().__init__(game, tag, type, image, grid_pos, *groups)
+        # MOVEMENT IMAGE
+        self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
         # FLAGS
         self.spell_selected = None
         self.start_action_flag = False
@@ -69,7 +71,7 @@ class Player(Entity):
                     if self.actions['idle']:
                         for node in recons_path:
                             surface.blit(
-                                node.hover_img,
+                                self.walking_hover,
                                 node.rect.topleft
                             )
                     elif self.actions['moving']:

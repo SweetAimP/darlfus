@@ -1,6 +1,7 @@
 from utils import *
 from tile import Tile
 from pathfinder import PathFinder
+from settings import TILE_IMAGES
 
 
 class Map:
@@ -9,6 +10,7 @@ class Map:
         self.grid_group = pg.sprite.Group()
         self.grid = None
         self.pathfinder = PathFinder()
+        self.tile_images = [pg.image.load(t).convert_alpha() for t in sorted(TILE_IMAGES)]
 
     def update_busy_tiles(self):
         for row in self.grid:
@@ -46,9 +48,17 @@ class Map:
         for y, row in enumerate(map_data):
             xs = []
             for x, tile in enumerate(row):
+                tile_img = None
+                if tile == 1:
+                    tile_img = self.tile_images[0]
+                elif tile == 2:
+                    tile_img = self.tile_images[1]
+                else:
+                    tile_img = self.tile_images[2]
                 xs.append(Tile(
                         (x, y),
                         tile,
+                        tile_img,
                         self.grid_group
                     )
                 )
@@ -121,9 +131,8 @@ class Map:
         self.update_neightbors()
     
     def draw(self):
-        for row in self.grid:
-            for tile in row:
-                self.game.screen.blit(
-                    tile.image,
-                    tile.draw_pos
-                )
+        for sprite in self.grid_group.sprites():
+            self.game.screen.blit(
+                sprite.image,
+                sprite.draw_pos
+            )

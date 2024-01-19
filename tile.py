@@ -2,7 +2,7 @@ from utils import *
 from settings import *
 
 class Tile(pg.sprite.Sprite):
-    def __init__(self, pos, type, *group):
+    def __init__(self, pos, type, image,*group):
         super().__init__(*group)
         self.grid_pos = pg.Vector2(pos)
         self.type = type # Type determines if the tile is walkable or not
@@ -10,19 +10,20 @@ class Tile(pg.sprite.Sprite):
         self.walkable = self.set_walkable() # indiacates if can be walked on or not
         self.neighbors = []
         self.size = 32
-        self.tiles_types = ['assets/tiles/void.png','assets/tiles/basic_tile.png']
-        self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + GRID_DRAW_OFFSET
-        self.image = pg.image.load(self.tiles_types[self.type]).convert_alpha()
+        self.draw_pos = self.set_draw_pos()
+        self.image = image
         self.rect = self.image.get_rect(topleft=self.draw_pos)
-        self.hover_img = pg.image.load("assets/tiles/hover.png").convert_alpha()
-        self.area_image = pg.image.load('assets/tiles/spell_hover.png').convert_alpha()
     
     def set_status(self):
         if self.type == 1:
             return 0
         else:
             return 1
-        
+    def set_draw_pos(self):
+        draw_pos = cartisian_to_iso(self.grid_pos, self.size) + GRID_DRAW_OFFSET
+        if self.type == 2:
+            draw_pos = draw_pos - TILE_TYPE_2_OFFSET
+        return draw_pos
     def set_walkable(self):
         if self.status == 0:
             self.walkable = True

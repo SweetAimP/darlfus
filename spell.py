@@ -13,6 +13,9 @@ class Spell:
         self.range_tiles = None
         self.area_tiles = None
         self.spell_area_center = None
+        # IMAGES FOR HOVERING
+        self.hover_img = pg.image.load('assets/hovers/hover.png').convert_alpha()
+        self.spell_area_img = pg.image.load('assets/hovers/spell_area.png').convert_alpha()
 
     def _update_onwer_tile(self):
         if self.owner_tile != self.owner.tile:
@@ -29,7 +32,7 @@ class Spell:
     def _draw_tile_hovers(self, surface, tiles, type):
         for tile in tiles:
                 if tile.status in (0,2):
-                    img = tile.hover_img if type == 'range' else (tile.area_image if type == 'area' else False)
+                    img = self.hover_img if type == 'range' else (self.spell_area_img if type == 'area' else False)
                     surface.blit(
                         img,
                         tile.draw_pos
