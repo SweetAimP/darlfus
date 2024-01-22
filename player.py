@@ -78,7 +78,7 @@ class Player(Entity):
                                 self.walking_hover,
                                 node.rect.topleft
                             )
-                    elif self.actions['moving']:
+                    elif self.actions['walk']:
                         self.steps = recons_path
                         self.directions = _
                 else:
@@ -96,9 +96,9 @@ class Player(Entity):
              
     def draw(self, surface):
         if self.playing:
-            if self.actions['idle'] or self.actions['moving']:
+            if self.actions['idle'] or self.actions['walk']:
                 self.draw_movement(surface)
-            elif self.actions['pre_casting']:
+            elif self.actions['pre_cast']:
                 self.draw_spell_casting(surface)
 
         surface.blit(
@@ -109,14 +109,14 @@ class Player(Entity):
     
     def update(self):
         if self.playing:
-            if self.actions['moving']:
+            if self.actions['walk']:
                 self.move()
-            elif self.actions['spell_casting']:
+            elif self.actions['spell_cast']:
                 self.cast_spell()
         
-            # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
-            self.animation.update()
-            self.image = self.animation.img()
-            self.update_tile()
-            self._update_draw_pos()
-            self._update_rect()
+        # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
+        self.animation.update()
+        self.image = self.animation.img()
+        self.update_tile()
+        self._update_draw_pos()
+        self._update_rect()

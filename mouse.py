@@ -19,15 +19,15 @@ class Mouse:
                         current_player.end_turn()
 
                     elif self.game.get_spell_selected(self.get_pos()):  # Control the current player state (Moving / Spell-casting)
-                        current_player.set_action('pre_casting')
+                        current_player.set_action('pre_cast')
 
-                    elif current_player.actions['pre_casting']:
-                        current_player.set_action('spell_casting')
+                    elif current_player.actions['pre_cast']:
+                        current_player.set_action('spell_cast')
                         
                     elif current_player.actions['idle']:
                         hover_tile = self.game.map.get_hover_tile()
                         if hover_tile and distance_to(current_player.grid_pos,hover_tile.grid_pos) <= current_player.usable_mp:
-                            current_player.set_action('moving')
+                            current_player.set_action('walk')
 
                         
     def get_pos(self):

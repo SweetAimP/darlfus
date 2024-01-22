@@ -74,7 +74,7 @@ class Map:
                     if tile.rect.collidepoint(point) and tile.draw_pos.distance_to(point) < 20:
                         if tile.status == 0:
                             return tile
-                        elif tile.status != 0 and self.game.current_player.actions['pre_casting']:
+                        elif tile.status != 0 and self.game.current_player.actions['pre_cast']:
                             return tile
         return False
     

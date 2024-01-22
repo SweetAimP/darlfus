@@ -100,14 +100,14 @@ class Enemy(Entity):
             else:
                 steps = min(self.usable_mp, distance_final_target - minimun_ranged_combo_action.range)
                 if self._move(final_target, steps):
-                    self.set_action('moving')
+                    self.set_action('walk')
                 else:
                     self.end_turn()
 
         elif self.usable_mp > 0:
                 farthest_tile = self.map.get_farthest_tile(closest_target)
                 if self._move(farthest_tile, self.usable_mp):
-                        self.set_action('moving')
+                        self.set_action('walk')
         else:
             self.end_turn()
 
@@ -115,10 +115,12 @@ class Enemy(Entity):
         if self.playing:
             if self.actions['idle']:
                 self.take_action()
-            elif self.actions['moving']:
+            elif self.actions['walk']:
                 self.move()
 
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
+            self.animation.update()
+        self.image = self.animation.img()
         self.update_tile()
         self._update_draw_pos()
         self._update_rect()

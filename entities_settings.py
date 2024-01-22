@@ -11,16 +11,16 @@ entities = {
         ],
         "assets": {
             "idle" : {
-                "sw": "assets/entities/wolf/idle/idle_ne.png",
-                "se": "assets/entities/wolf/idle/idle_ne.png",
-                "nw": "assets/entities/wolf/idle/idle_ne.png",
+                "sw": "assets/entities/wolf/idle/idle_sw.png",
+                "se": "assets/entities/wolf/idle/idle_se.png",
+                "nw": "assets/entities/wolf/idle/idle_nw.png",
                 "ne": "assets/entities/wolf/idle/idle_ne.png"
             },
             "walk" : {
-                "sw": "assets/entities/wolf/idle/walk_ne.png",
-                "se": "assets/entities/wolf/idle/walk_ne.png",
-                "nw": "assets/entities/wolf/idle/walk_ne.png",
-                "ne": "assets/entities/wolf/idle/walk_ne.png"
+                "sw": "assets/entities/wolf/walk/walk_sw.png",
+                "se": "assets/entities/wolf/walk/walk_se.png",
+                "nw": "assets/entities/wolf/walk/walk_nw.png",
+                "ne": "assets/entities/wolf/walk/walk_ne.png"
             }
         }
     }

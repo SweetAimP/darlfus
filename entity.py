@@ -15,12 +15,12 @@ class Entity(pg.sprite.Sprite, ABC):
         self.tag = tag
         self.type = type
         self.action = 'idle'
-        self.facing = 'ne'
+        self.facing = 'sw'
         self.actions = {
             "idle" : True,
-            "moving" : False,
-            "pre_casting": False,
-            "spell_casting" : False
+            "walk" : False,
+            "pre_cast": False,
+            "spell_cast" : False
         }       
 
         # ENTITY RELATED DATA
@@ -45,6 +45,12 @@ class Entity(pg.sprite.Sprite, ABC):
                 "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["se"],4,32),duration=self.duration,loop=True),
                 "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["nw"],4,32),duration=self.duration,loop=True),
                 "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["ne"],4,32),duration=self.duration,loop=True),
+            } ,
+            'walk':{
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["sw"],4,32),duration=self.duration,loop=True),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["se"],4,32),duration=self.duration,loop=True),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["nw"],4,32),duration=self.duration,loop=True),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["ne"],4,32),duration=self.duration,loop=True),
             } 
         }
         self.animation = self.animations[self.action][self.facing]
@@ -58,7 +64,7 @@ class Entity(pg.sprite.Sprite, ABC):
         self.usable_mp= self.mp
         self.usable_ap = self.ap
         self.playing = False
-        self.moving = False
+        self.walk = False
         self.steps = []
         self.directions = []
         self.current_step = 0
@@ -69,7 +75,8 @@ class Entity(pg.sprite.Sprite, ABC):
             for action_key in self.actions.keys():
                 if action == action_key:
                     self.actions[action_key] = True
-                    self.animation = self.animations[self.action][self.facing].copy()
+                    if self.action in self.animations:
+                        self.animation = self.animations[self.action][self.facing].copy()
                 else:
                     self.actions[action_key] = False
 
