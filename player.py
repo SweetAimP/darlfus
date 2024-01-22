@@ -63,13 +63,13 @@ class Player(Entity):
         if casted:
             self._update_ap(self.spell_selected.ap_cost)
             self._increase_casted_times(self.spell_selected)
-        self.set_action('idle')
+        self.set_action('idle', self.facing)
         
     def start_action(self):
         self.start_action_flag = not self.start_action_flag
 
     def draw_movement(self, surface):
-            recons_path, _ = self.map.get_walking_path()
+            recons_path, directions = self.map.get_walking_path()
             if not self.steps:
                 if recons_path:
                     if self.actions['idle']:
@@ -80,7 +80,7 @@ class Player(Entity):
                             )
                     elif self.actions['walk']:
                         self.steps = recons_path
-                        self.directions = _
+                        self.directions = directions
                 else:
                     return False
     

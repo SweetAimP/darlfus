@@ -70,15 +70,18 @@ class Enemy(Entity):
         
     def _move(self, target, steps):
         if steps > 0:
+            self.set_action('walk', self.facing)
             target_tile = self.map.get_target_tile(target)
-            recons_path, _ = self.map.get_walking_path(target_tile)
+            recons_path, directions = self.map.get_walking_path(target_tile)
             if not self.steps:
                 if recons_path:
                     self.steps = recons_path[:steps]
-                    self.directions = _
+                    self.directions = directions
                     return True
                 else:
                     return False
+        else:
+            return False
 
     def _cast_spell(self, target, spell):
         target.take_damage(spell.spell_dmg)
@@ -99,15 +102,13 @@ class Enemy(Entity):
                     self._cast_spell(final_target, spell)
             else:
                 steps = min(self.usable_mp, distance_final_target - minimun_ranged_combo_action.range)
-                if self._move(final_target, steps):
-                    self.set_action('walk')
-                else:
+                if not self._move(final_target, steps):
                     self.end_turn()
 
         elif self.usable_mp > 0:
                 farthest_tile = self.map.get_farthest_tile(closest_target)
-                if self._move(farthest_tile, self.usable_mp):
-                        self.set_action('walk')
+                if not self._move(farthest_tile, self.usable_mp):
+                    self.end_turn()
         else:
             self.end_turn()
 
@@ -119,7 +120,7 @@ class Enemy(Entity):
                 self.move()
 
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
-            self.animation.update()
+        self.animation.update()
         self.image = self.animation.img()
         self.update_tile()
         self._update_draw_pos()
@@ -127,4 +128,4 @@ class Enemy(Entity):
       
     def end_turn(self):
         self.playing = False
-        self.set_action('idle')
+        self.set_action('idle', self.facing)

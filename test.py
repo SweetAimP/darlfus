@@ -1,25 +1,28 @@
-def move_away_from_player(enemy_position, player_position, max_cells_to_move):
-    # Calcular la diferencia en las coordenadas x e y entre el jugador y el enemigo
-    dx = enemy_position[0] - player_position[0]
-    dy = enemy_position[1] - player_position[1]
+import numpy as np
+from utils import *
+def encontrar_puntos_entre_dos_puntos(punto1, punto2, cantidad_puntos):
+    x1, y1 = punto1
+    x2, y2 = punto2
 
-    # Determinar la dirección a la que el enemigo debería moverse para alejarse del jugador
-    move_direction = (1 if dx < 0 else -1, 1 if dy < 0 else -1)
+    # Paso 1: Encuentra el vector dirección
+    direccion = np.array([x2 - x1, y2 - y1])
 
-    # Calcular la nueva posición del enemigo
-    new_position = (
-        enemy_position[0] + move_direction[0] * max_cells_to_move,
-        enemy_position[1] + move_direction[1] * max_cells_to_move
-    )
+    # Paso 2: Normaliza el vector dirección
+    direccion_unitaria = direccion / np.linalg.norm(direccion)
 
-    return new_position
+    # Calcula distancias equidistantes a lo largo de la dirección unitaria
+    distancias = np.linspace(0, 1, cantidad_puntos + 2)[1:-1]
+    puntos_intermedios = [(pg.Vector2(x1 + dist * direccion_unitaria[0], y1 + dist * direccion_unitaria[1])) for dist in distancias]
 
-# Ejemplo de uso:
-player_position = (2, 2)
-enemy_position = (4, 4)
-max_cells_to_move = 3
+    return puntos_intermedios
 
-new_enemy_position = move_away_from_player(enemy_position, player_position, max_cells_to_move)
+# # Ejemplo de uso
+# punto_inicial = (0, 1)
+# punto_final = (0, 4)
+# cantidad_puntos_deseados = 10
 
-print(f"Posición original del enemigo: {enemy_position}")
-print(f"Nueva posición del enemigo: {new_enemy_position}")
+# puntos_intermedios = encontrar_puntos_entre_dos_puntos(punto_inicial, punto_final, cantidad_puntos_deseados)
+
+# print("Punto inicial:", punto_inicial)
+# print("Punto final:", punto_final)
+# print("Puntos intermedios:", puntos_intermedios)

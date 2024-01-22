@@ -100,9 +100,10 @@ class Game:
         return False
     
     def Kill_entity(self, entity):
-        index = self.turn_order.index(entity)
-        self.turn_order.pop(index)
-        entity.kill()
+        # index = self.turn_order.index(entity)
+        # self.turn_order.pop(index)
+        # entity.kill()
+        pass
         
     def run(self):
         self.turn_start_time = time.time()

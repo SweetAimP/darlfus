@@ -78,9 +78,9 @@ class Map:
                             return tile
         return False
     
-    def _call_pathfinder(self,start, end):
+    def _call_pathfinder(self,start, end, current_player):
         if start != end:
-            return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, self.game.current_player.tag)
+            return self.game.map.pathfinder.find_path(self.game.map.grid, start, end, current_player)
         else:
             return False, False
          
@@ -89,9 +89,9 @@ class Map:
         start = self.game.current_player.tile
 
         if self.game.current_player.tag == 'player' and end and distance_to(self.game.current_player.grid_pos,end.grid_pos) <= self.game.current_player.usable_mp:
-            return self._call_pathfinder(start,end)
+            return self._call_pathfinder(start,end, self.game.current_player)
         elif self.game.current_player.tag == 'npc':
-            return self._call_pathfinder(start,end)
+            return self._call_pathfinder(start,end, self.game.current_player)
         else:
             if self.game.current_player.tag == 'player' and self.game.current_player.start_action_flag:
                 self.game.current_player.end_action()

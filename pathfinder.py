@@ -35,7 +35,7 @@ class PathFinder:
                 )
         self.movement_direction.append(self.movement_direction[-1])
 
-    def find_path(self, grid, start, end, caller_type):
+    def find_path(self, grid, start, end, caller):
             self.start = start
             self.end = end
             count = 0
@@ -62,11 +62,11 @@ class PathFinder:
                     return reconstructed_path,movement_direction
                                
                 for neighbor in current.neighbors:
-                    if caller_type == 'player':
+                    if caller.tag == 'player':
                         if neighbor.walkable:
                             self._get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)
-                    elif caller_type == 'npc':
-                        if not neighbor.walkable and neighbor.status == 2:
+                    elif caller.tag == 'npc':
+                        if not neighbor.walkable and neighbor.status == 2 and neighbor == end:
                             self._get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)
                         elif neighbor.walkable:
                             self._get_score(g_score,f_score,came_from,current,open_set_hash,neighbor,end,open_set,count)

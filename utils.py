@@ -8,8 +8,8 @@ def read_map_file(path):
 
 def cartisian_to_iso(cartisian, delta = 1):
     screen_pos = pg.Vector2()
-    screen_pos.x = int(0.5 * (cartisian.x  - cartisian.y) * delta)
-    screen_pos.y = int(0.25 * (cartisian.x  + cartisian.y) * delta) 
+    screen_pos.x = (0.5 * (cartisian.x  - cartisian.y) * delta)
+    screen_pos.y = (0.25 * (cartisian.x  + cartisian.y) * delta) 
     return screen_pos
     
 def isometric_to_cartisian(isometric):
