@@ -16,6 +16,8 @@ class Enemy(Entity):
         # GAMEPLAY VARIABLES
         self.thinking = True
         self.casted = False
+        self.action_cooldown = 2000
+        self.action_cooldown_time = None
     
     def _set_spells_array(self):
         for spell in self.spells:
@@ -77,6 +79,7 @@ class Enemy(Entity):
                 if recons_path:
                     self.steps = recons_path[:steps]
                     self.directions = directions
+                    self._set_action_cooldown()
                     return True
                 else:
                     return False
@@ -93,7 +96,7 @@ class Enemy(Entity):
         lowest_hp_target = self._get_lowest_hp_target()
 
         if self.usable_ap >= self.min_dmg_ap_req:
-            best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap) # Conditioned if movement is needed (TODO)
+            best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap)
             minimun_ranged_combo_action = self._get_minimun_spell_range(best_dmg_combo)
             final_target = lowest_hp_target if distance_to(self.grid_pos, lowest_hp_target.grid_pos) < minimun_ranged_combo_action.range + self.usable_mp else closest_target
             distance_final_target = distance_to(self.grid_pos, final_target.grid_pos)
@@ -114,10 +117,11 @@ class Enemy(Entity):
 
     def update(self):
         if self.playing:
-            if self.actions['idle']:
-                self.take_action()
-            elif self.actions['walk']:
-                self.move()
+            if pg.time.get_ticks() - self.action_cooldown_time >=  self.action_cooldown:
+                if self.actions['idle']:
+                    self.take_action()
+                elif self.actions['walk']:
+                    self.move()
 
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
         self.animation.update()
@@ -125,7 +129,14 @@ class Enemy(Entity):
         self.update_tile()
         self._update_draw_pos()
         self._update_rect()
-      
+
+    def _set_action_cooldown(self):
+        pass  
+
     def end_turn(self):
         self.playing = False
         self.set_action('idle', self.facing)
+    
+    def start_turn(self):
+        super().start_turn()
+        self.action_cooldown_time = pg.time.get_ticks()
