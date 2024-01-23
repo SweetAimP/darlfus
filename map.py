@@ -93,8 +93,6 @@ class Map:
         elif self.game.current_player.tag == 'npc':
             return self._call_pathfinder(start,end, self.game.current_player)
         else:
-            if self.game.current_player.tag == 'player' and self.game.current_player.start_action_flag:
-                self.game.current_player.end_action()
             return False, False
     
     def get_attacked_entities(self, cast_area, spell_dmg):

@@ -7,10 +7,7 @@ class Player(Entity):
         
         # FLAGS
         self.spell_selected = None
-        self.start_action_flag = False
-
-        # SPELL CAST COUNTING
-        self.casted_spells = {}
+        self.casted_spells = {} # SPELL CAST COUNTING
     
     def get_animation(self):
         pass
@@ -62,9 +59,6 @@ class Player(Entity):
             self._update_ap(self.spell_selected.ap_cost)
             self._increase_casted_times(self.spell_selected)
         self.set_action('idle', self.facing)
-        
-    def start_action(self):
-        self.start_action_flag = not self.start_action_flag
 
     def draw_movement(self, surface):
             recons_path, directions = self.map.get_walking_path()
@@ -104,8 +98,7 @@ class Player(Entity):
                 self.tile.rect.topleft
             )
         super().draw(surface)
-        
-    
+         
     def update(self):
         if self.playing:
             if self.actions['walk']:

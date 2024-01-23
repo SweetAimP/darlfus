@@ -96,19 +96,23 @@ class Entity(pg.sprite.Sprite, ABC):
         return self
      
     def start_turn(self):
-        self.playing = True
-        self.set_action('idle', self.facing)
-        self.mp_used = 0
-        self.usable_mp = self.mp
-        self.ap_used = 0
-        self.usable_ap = self.ap
+        if self.current_health > 0:
+            self.playing = True
+            self.set_action('idle', self.facing)
+            self.mp_used = 0
+            self.usable_mp = self.mp
+            self.ap_used = 0
+            self.usable_ap = self.ap
+            return True
+        else:
+            return False
 
     def take_damage(self, dmg):
         if self.current_health - dmg > 0:
             self.current_health -= dmg
         else:
             self.current_health = 0
-            self.game.Kill_entity(self)
+            self.kill()
 
     def _update_rect(self):
         self.rect.topleft = self.draw_pos

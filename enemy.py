@@ -145,5 +145,5 @@ class Enemy(Entity):
         self.set_action('idle', self.facing)
     
     def start_turn(self):
-        super().start_turn()
-        self._set_action_cooldown()
+        if super().start_turn():
+            self._set_action_cooldown()
