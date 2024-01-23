@@ -139,7 +139,7 @@ class Entity(pg.sprite.Sprite, ABC):
     def _define_movement(self, start, end, inner_steps):
         if not self.inner_steps:
             self.inner_steps.append(start)
-            self.inner_steps.extend(test.encontrar_puntos_entre_dos_puntos(start,end, inner_steps))
+            self.inner_steps.extend(find_interm_points(start,end, inner_steps))
             self.inner_steps.append(end)
 
         self.grid_pos = self.inner_steps[self.inner_step]
@@ -168,7 +168,6 @@ class Entity(pg.sprite.Sprite, ABC):
                 self._update_mp(mp_used)
                 self.set_action('idle', self.facing)
                 self.movement_clean_up()
-
 
     @abstractmethod
     def update(self):

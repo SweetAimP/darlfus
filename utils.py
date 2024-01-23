@@ -1,5 +1,22 @@
 import math
+import numpy as np
 import pygame as pg
+
+def find_interm_points(punto1, punto2, cantidad_puntos):
+    x1, y1 = punto1
+    x2, y2 = punto2
+
+    # Paso 1: Encuentra el vector dirección
+    direccion = np.array([x2 - x1, y2 - y1])
+
+    # Paso 2: Normaliza el vector dirección
+    direccion_unitaria = direccion / np.linalg.norm(direccion)
+
+    # Calcula distancias equidistantes a lo largo de la dirección unitaria
+    distancias = np.linspace(0, 1, cantidad_puntos + 2)[1:-1]
+    puntos_intermedios = [(pg.Vector2(x1 + dist * direccion_unitaria[0], y1 + dist * direccion_unitaria[1])) for dist in distancias]
+
+    return puntos_intermedios
 
 def read_map_file(path):
     with open(path) as file:
