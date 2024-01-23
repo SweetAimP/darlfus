@@ -109,9 +109,11 @@ class Entity(pg.sprite.Sprite, ABC):
     def take_damage(self, dmg):
         if self.current_health - dmg > 0:
             self.current_health -= dmg
+            return False
         else:
             self.current_health = 0
             self.kill()
+            return True
 
     def _update_rect(self):
         self.rect.topleft = self.draw_pos

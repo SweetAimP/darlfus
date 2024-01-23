@@ -29,7 +29,6 @@ class Enemy(Entity):
 
     def _get_combo_actions(self, spells, spell_capacity):
         memo = {}  # Dictionary to store already computed results
-
         def dp(current_spell, remaining_capacity):
             if current_spell < 0 or remaining_capacity == 0:
                 return 0, []
@@ -89,9 +88,13 @@ class Enemy(Entity):
             return False
 
     def _cast_spell(self, target, spell):
-        target.take_damage(spell.spell_dmg)
         self._update_ap(spell.ap_cost)
-
+        spell.remaining_uses -= 1
+        if target.take_damage(spell.spell_dmg):
+            self.casted = False
+            return False
+        else:
+            return True
     def take_action(self):
         # Getting the closest and lowest hp targets
         if self.game.players_group.sprites():
@@ -108,7 +111,8 @@ class Enemy(Entity):
                     self.casted = True
                     for spell, uses in best_dmg_combo:
                         for _ in range(uses):
-                            self._cast_spell(final_target, spell)
+                            if not self._cast_spell(final_target, spell):
+                                break
                 else:
                     steps = min(self.usable_mp, distance_final_target - minimun_ranged_combo_action.range)
                     if not self._move(final_target, steps):
@@ -147,6 +151,10 @@ class Enemy(Entity):
     def _set_action_cooldown(self):
         self.action_cooldown_time = pg.time.get_ticks()
 
+    def _reset_spell_uses(self):
+        for spell in self.spells:
+            spell.remaining_uses = spell.max_usages
+
     def end_turn(self):
         self.playing = False
         self.casted = False
@@ -155,3 +163,4 @@ class Enemy(Entity):
     def start_turn(self):
         if super().start_turn():
             self._set_action_cooldown()
+            self._reset_spell_uses()
