@@ -5,8 +5,6 @@ class Player(Entity):
     def __init__(self, game, tag, type, grid_pos, *groups):
         super().__init__(game, tag, type, grid_pos, *groups)
         
-        # MOVEMENT IMAGE
-        self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
         # FLAGS
         self.spell_selected = None
         self.start_action_flag = False
@@ -101,11 +99,12 @@ class Player(Entity):
             elif self.actions['pre_cast']:
                 self.draw_spell_casting(surface)
 
-        surface.blit(
-            self.image,
-            self.draw_pos
-        )
-        self.health_bar.draw(surface)
+            surface.blit(
+                self.walking_hover,
+                self.tile.rect.topleft
+            )
+        super().draw(surface)
+        
     
     def update(self):
         if self.playing:

@@ -79,7 +79,6 @@ class Enemy(Entity):
                 if recons_path:
                     self.steps = recons_path[:steps]
                     self.directions = directions
-                    self._set_action_cooldown()
                     return True
                 else:
                     return False
@@ -115,6 +114,14 @@ class Enemy(Entity):
         else:
             self.end_turn()
 
+    def draw(self, surface):
+        if self.playing:
+            surface.blit(
+                self.walking_hover,
+                self.tile.rect.topleft
+            )
+        super().draw(surface)
+
     def update(self):
         if self.playing:
             if pg.time.get_ticks() - self.action_cooldown_time >=  self.action_cooldown:
@@ -131,7 +138,7 @@ class Enemy(Entity):
         self._update_rect()
 
     def _set_action_cooldown(self):
-        pass  
+        self.action_cooldown_time = pg.time.get_ticks()
 
     def end_turn(self):
         self.playing = False
@@ -139,4 +146,4 @@ class Enemy(Entity):
     
     def start_turn(self):
         super().start_turn()
-        self.action_cooldown_time = pg.time.get_ticks()
+        self._set_action_cooldown()

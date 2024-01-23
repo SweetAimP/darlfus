@@ -39,6 +39,8 @@ class Entity(pg.sprite.Sprite, ABC):
         self.tile = self.map.grid[int(self.grid_pos[1])][int(self.grid_pos[0])]
         self.draw_pos = cartisian_to_iso(self.grid_pos, self.size) + OVERGRID_DRAW_OFFSET
         # ANIMATION
+        # MOVEMENT IMAGE
+        self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
         self.duration = 6
         self.animations = {
             'idle':{
@@ -133,31 +135,36 @@ class Entity(pg.sprite.Sprite, ABC):
         self.current_step = 0
         self.inner_step = 0
         self.inner_steps = []
-    
-    def _learp(self, start,end,t):
-        return int(int(start + t * (end - start)))
+
+    def _define_movement(self, start, end, inner_steps):
+        if not self.inner_steps:
+            self.inner_steps.append(start)
+            self.inner_steps.extend(test.encontrar_puntos_entre_dos_puntos(start,end, inner_steps))
+            self.inner_steps.append(end)
+
+        self.grid_pos = self.inner_steps[self.inner_step]
+        facing = self.directions[self.current_step+1]
+        self.set_action('walk', facing)
+        if self.inner_step + 1 < len(self.inner_steps):
+            self.inner_step += 1
+        else:
+            self.current_step += 1
+            self.inner_step = 0
+            self.inner_steps = []
+
     def move(self):
-        if len(self.steps) > 0 and self.usable_mp > 0:
-            if self.current_step + 1 < len(self.steps):
+        steps = len(self.steps)
+        if steps > 0 and self.usable_mp > 0:
+            if steps == 1 and self.current_step < steps:
+                start = self.grid_pos
+                end = self.steps[self.current_step].grid_pos
+                self._define_movement(start,end, 10)
+            elif self.current_step + 1 < steps:
                 start = self.steps[self.current_step].grid_pos
                 end = self.steps[self.current_step + 1].grid_pos
-                
-                if not self.inner_steps:
-                    self.inner_steps.append(start)
-                    self.inner_steps.extend(test.encontrar_puntos_entre_dos_puntos(start,end, 10))
-                    self.inner_steps.append(end)
-
-                self.grid_pos = self.inner_steps[self.inner_step]
-                facing = self.directions[self.current_step+1]
-                self.set_action('walk', facing)
-                if self.inner_step + 1 < len(self.inner_steps):
-                    self.inner_step += 1
-                else:
-                    self.current_step += 1
-                    self.inner_step = 0
-                    self.inner_steps = []
+                self._define_movement(start,end, 10)
             else:
-                mp_used = len(self.steps)
+                mp_used = steps
                 self._update_mp(mp_used)
                 self.set_action('idle', self.facing)
                 self.movement_clean_up()
