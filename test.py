@@ -1,28 +1,52 @@
-import numpy as np
-from utils import *
-def encontrar_puntos_entre_dos_puntos(punto1, punto2, cantidad_puntos):
-    x1, y1 = punto1
-    x2, y2 = punto2
+class Spell:
+    def __init__(self, name, cost, damage, max_uses):
+        self.name = name
+        self.cost = cost
+        self.damage = damage
+        self.max_uses = max_uses
+        self.remaining_uses = max_uses
 
-    # Paso 1: Encuentra el vector dirección
-    direccion = np.array([x2 - x1, y2 - y1])
+def select_best_combo(spells, spell_capacity):
+    memo = {}  # Dictionary to store already computed results
 
-    # Paso 2: Normaliza el vector dirección
-    direccion_unitaria = direccion / np.linalg.norm(direccion)
+    def dp(current_spell, remaining_capacity):
+        if current_spell < 0 or remaining_capacity == 0:
+            return 0, []
 
-    # Calcula distancias equidistantes a lo largo de la dirección unitaria
-    distancias = np.linspace(0, 1, cantidad_puntos + 2)[1:-1]
-    puntos_intermedios = [(pg.Vector2(x1 + dist * direccion_unitaria[0], y1 + dist * direccion_unitaria[1])) for dist in distancias]
+        if (current_spell, remaining_capacity) in memo:
+            return memo[(current_spell, remaining_capacity)]
 
-    return puntos_intermedios
+        max_damage = 0
+        best_combo = []
 
-# # Ejemplo de uso
-# punto_inicial = (0, 1)
-# punto_final = (0, 4)
-# cantidad_puntos_deseados = 10
+        # Try using the current spell
+        for uses in range(min(spells[current_spell].remaining_uses, remaining_capacity // spells[current_spell].cost) + 1):
+            total_damage, remaining_combos = dp(current_spell - 1, remaining_capacity - uses * spells[current_spell].cost)
+            total_damage += uses * spells[current_spell].damage
 
-# puntos_intermedios = encontrar_puntos_entre_dos_puntos(punto_inicial, punto_final, cantidad_puntos_deseados)
+            if total_damage > max_damage:
+                max_damage = total_damage
+                best_combo = remaining_combos + [(spells[current_spell], uses)]
 
-# print("Punto inicial:", punto_inicial)
-# print("Punto final:", punto_final)
-# print("Puntos intermedios:", puntos_intermedios)
+        memo[(current_spell, remaining_capacity)] = max_damage, best_combo
+        return max_damage, best_combo
+
+    total_damage, selected_spells = dp(len(spells) - 1, spell_capacity)
+    return total_damage, selected_spells
+
+# Example usage:
+spell1 = Spell("Spell 1", 3, 10, 2)
+spell2 = Spell("Spell 2", 6, 15, 1)
+
+enemy_spells = [spell1]
+spell_capacity = 10
+
+best_damage, selected_spells = select_best_combo(enemy_spells, spell_capacity)
+
+if selected_spells:
+    print("Best combo:")
+    for spell, uses in selected_spells:
+        print(f"{spell.name} x{uses}")
+    print(f"Total damage: {best_damage}")
+else:
+    print("No valid combo within spell capacity.")

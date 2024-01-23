@@ -4,6 +4,7 @@ class Spell:
         self.owner = owner
         self.owner_tile = None
         self.max_usages = spell_settings["max_usages"]
+        self.remaining_uses = self.max_usages # USED WHEN CALCULATING THE BEST COMBO AT ENEMY LVL
         self.name = spell_settings["name"]
         self.type = spell_settings["type"]
         self.area = spell_settings["area"]

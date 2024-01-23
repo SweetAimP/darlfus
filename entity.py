@@ -6,7 +6,6 @@ from healthbar import HealthBar
 from spell import Spell
 from abc import ABC, abstractmethod
 from animation import Animation
-import test
 
 class Entity(pg.sprite.Sprite, ABC):
     def __init__(self, game, tag, type, grid_pos, *groups):

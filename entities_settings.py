@@ -1,7 +1,7 @@
 entities = {
     "wolf" : {
         "size":32,
-        "max_health": 250,
+        "max_health": 70,
         "initiative": 100,
         "mp": 10,
         "ap": 10,
