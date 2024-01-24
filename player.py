@@ -64,7 +64,6 @@ class Player(Entity):
         elif self.animation.done and self.actions['attack'] :
             self.set_action('idle', self.facing)
 
-
     def draw_movement(self, surface):
             recons_path, directions = self.map.get_walking_path()
             if not self.steps:

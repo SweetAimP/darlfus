@@ -11,14 +11,17 @@ class Enemy(Entity):
         self.dmg_spells = []
         self.mov_spells = []
         self._set_spells_array()
-        self.min_dmg_ap_req = min(self.dmg_spells, key= lambda spell : spell.ap_cost).ap_cost
-        self.min_mov_ap_req = min(self.mov_spells, key= lambda spell : spell.ap_cost).ap_cost
+        self.min_dmg_ap_req = 99 if len(self.dmg_spells) == 0 else min(self.dmg_spells, key= lambda spell : spell.ap_cost).ap_cost
+        self.min_mov_ap_req = 99 if len(self.mov_spells) == 0 else min(self.mov_spells, key= lambda spell : spell.ap_cost).ap_cost
 
         # GAMEPLAY VARIABLES
         self.thinking = True
         self.casted = False
         self.action_cooldown = 2000
         self.action_cooldown_time = None
+        self.best_dmg_combo = None
+        self.spell_casting_index = 0
+        self.final_target = None
     
     def _set_spells_array(self):
         for spell in self.spells:
@@ -49,10 +52,14 @@ class Enemy(Entity):
                     best_combo = remaining_combos + [(spells[current_spell], uses)]
 
             memo[(current_spell, remaining_capacity)] = max_damage, best_combo
-            return best_combo
+            return total_damage, best_combo
 
-        selected_spells = dp(len(spells) - 1, spell_capacity)
-        return selected_spells
+        total_damage, selected_spells = dp(len(spells) - 1, spell_capacity)
+        final_spells = []
+        for spell, uses in selected_spells:
+            for _ in range(uses):
+                final_spells.append(spell)
+        return final_spells
 
     def _get_lowest_hp_target(self):
         return min(
@@ -91,7 +98,7 @@ class Enemy(Entity):
         self._update_ap(spell.ap_cost)
         spell.remaining_uses -= 1
         if target.take_damage(spell.spell_dmg):
-            self.casted = False
+            #self.casted = False
             return False
         else:
             return True
@@ -103,20 +110,15 @@ class Enemy(Entity):
             lowest_hp_target = self._get_lowest_hp_target()
 
             if self.usable_ap >= self.min_dmg_ap_req and not self.casted:
-                best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap)
-                selected_spells = [_spell for _spell, _ in best_dmg_combo]
-                minimun_ranged_combo_action = self._get_minimun_spell_range(selected_spells)
-                final_target = lowest_hp_target if distance_to(self.grid_pos, lowest_hp_target.grid_pos) < minimun_ranged_combo_action.range + self.usable_mp else closest_target
-                distance_final_target = distance_to(self.grid_pos, final_target.grid_pos)
-                if distance_to(self.grid_pos, final_target.grid_pos) <= minimun_ranged_combo_action.range:
-                    self.casted = True
-                    for spell, uses in best_dmg_combo:
-                        for _ in range(uses):
-                            if not self._cast_spell(final_target, spell):
-                                break
+                self.best_dmg_combo = self._get_combo_actions(self.dmg_spells, self.usable_ap)
+                minimun_ranged_combo_action = self._get_minimun_spell_range(self.best_dmg_combo)
+                self.final_target = lowest_hp_target if distance_to(self.grid_pos, lowest_hp_target.grid_pos) < minimun_ranged_combo_action.range + self.usable_mp else closest_target
+                distance_final_target = distance_to(self.grid_pos, self.final_target.grid_pos)
+                if distance_to(self.grid_pos, self.final_target.grid_pos) <= minimun_ranged_combo_action.range:
+                    self.set_action("attack", check_facing(self.final_target.grid_pos, self.grid_pos))
                 else:
                     steps = min(self.usable_mp, distance_final_target - minimun_ranged_combo_action.range)
-                    if not self._move(final_target, steps):
+                    if not self._move(self.final_target, steps):
                         self.end_turn()
 
             elif self.usable_mp > 0:
@@ -133,6 +135,19 @@ class Enemy(Entity):
                 self.tile.rect.topleft
             )
         super().draw(surface)
+    
+    def attack(self):
+        if self.spell_casting_index < len(self.best_dmg_combo):
+            if self.animation.done:
+                if self._cast_spell(self.final_target, self.best_dmg_combo[self.spell_casting_index]):
+                    self.set_action("idle", self.facing)
+                    self.animation.done = False
+                    self.spell_casting_index += 1
+                else:
+                    self.set_action("idle", self.facing)                
+        else:
+            self.spell_casting_index = 0
+            self.set_action("idle", self.facing)
 
     def update(self):
         if self.playing:
@@ -141,6 +156,8 @@ class Enemy(Entity):
                     self.take_action()
                 elif self.actions['walk']:
                     self.move()
+                elif self.actions["attack"]:
+                    self.attack()
 
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
         self.animation.update()
