@@ -95,6 +95,7 @@ class Enemy(Entity):
             return False
         else:
             return True
+    
     def take_action(self):
         # Getting the closest and lowest hp targets
         if self.game.players_group.sprites():
