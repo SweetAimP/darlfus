@@ -21,6 +21,12 @@ entities = {
                 "se": "assets/entities/wolf/walk/walk_se.png",
                 "nw": "assets/entities/wolf/walk/walk_nw.png",
                 "ne": "assets/entities/wolf/walk/walk_ne.png"
+            },
+            "attack" : {
+                "sw": "assets/entities/wolf/attack/attack_sw.png",
+                "se": "assets/entities/wolf/attack/attack_se.png",
+                "nw": "assets/entities/wolf/attack/attack_nw.png",
+                "ne": "assets/entities/wolf/attack/attack_ne.png"
             }
         }
     }

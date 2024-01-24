@@ -49,16 +49,21 @@ class Player(Entity):
     
     def cast_spell(self):
         casted = False
-        if self.usable_ap >= self.spell_selected.ap_cost and self.spell_selected.spell_area_center is not None and self._get_casted_times(self.spell_selected) < self.spell_selected.max_usages:
-            if self.spell_selected.type == "dmg":
-                casted = self._cast_dmg_spell()
-            elif self.spell_selected.type == "mov":
-                casted = self._cast_mov_spell()
+        if self.actions["spell_cast"]:
+            if self.usable_ap >= self.spell_selected.ap_cost and self.spell_selected.spell_area_center is not None and self._get_casted_times(self.spell_selected) < self.spell_selected.max_usages:
+                if self.spell_selected.type == "dmg":
+                    casted = self._cast_dmg_spell()
+                elif self.spell_selected.type == "mov":
+                    casted = self._cast_mov_spell()
         
-        if casted:
-            self._update_ap(self.spell_selected.ap_cost)
-            self._increase_casted_times(self.spell_selected)
-        self.set_action('idle', self.facing)
+            if casted:
+                self._update_ap(self.spell_selected.ap_cost)
+                self._increase_casted_times(self.spell_selected)
+                self.set_action('attack', check_facing(self.spell_selected.spell_area_center.grid_pos, self.grid_pos))
+        
+        elif self.animation.done and self.actions['attack'] :
+            self.set_action('idle', self.facing)
+
 
     def draw_movement(self, surface):
             recons_path, directions = self.map.get_walking_path()
@@ -103,7 +108,7 @@ class Player(Entity):
         if self.playing:
             if self.actions['walk']:
                 self.move()
-            elif self.actions['spell_cast']:
+            elif self.actions['spell_cast'] or self.actions['attack']:
                 self.cast_spell()
         
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS

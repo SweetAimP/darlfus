@@ -20,7 +20,8 @@ class Entity(pg.sprite.Sprite, ABC):
             "idle" : True,
             "walk" : False,
             "pre_cast": False,
-            "spell_cast" : False
+            "spell_cast" : False,
+            "attack" : False
         }       
 
         # ENTITY RELATED DATA
@@ -53,6 +54,12 @@ class Entity(pg.sprite.Sprite, ABC):
                 "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["se"],8,32),duration=2,loop=True),
                 "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["nw"],8,32),duration=2,loop=True),
                 "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["ne"],8,32),duration=2,loop=True),
+            },
+            'attack':{
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["sw"],15,32),duration=self.duration,loop=False),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["se"],15,32),duration=self.duration,loop=False),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["nw"],15,32),duration=self.duration,loop=False),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["ne"],15,32),duration=self.duration,loop=False),
             } 
         }
         self.animation = self.animations[self.action][self.facing]
