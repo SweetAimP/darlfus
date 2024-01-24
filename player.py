@@ -55,6 +55,9 @@ class Player(Entity):
                     casted = self._cast_dmg_spell()
                 elif self.spell_selected.type == "mov":
                     casted = self._cast_mov_spell()
+            else:
+                self.set_action('idle', self.facing)
+
         
             if casted:
                 self._update_ap(self.spell_selected.ap_cost)
