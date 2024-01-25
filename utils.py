@@ -60,12 +60,15 @@ def extrac_imgs_from_sheet(sheet, frames, size):
 def check_facing(vector_to, vector_from):
         angle_radians = math.atan2(vector_to.y - vector_from.y, vector_to.x - vector_from.x)
         angle_degrees = math.degrees(angle_radians)
+        print(angle_radians,angle_degrees)
 
-        if angle_degrees == 0:
+        if angle_degrees >= -90 and angle_degrees <= 0:
             return 'se'
-        elif angle_degrees == 180:
+        elif (angle_degrees >135.0 and angle_degrees <= 180) or (angle_degrees >= -180.0 and angle_degrees < -135.0):
             return 'nw'
-        elif angle_degrees == -90:
+        elif angle_degrees >= -135.0 and angle_degrees <= -90:
             return 'ne'
+        elif angle_degrees >= 45.0 and angle_degrees <= 135.0:
+             return 'sw'
         else:
-            return 'sw'
+             return 'sw'
