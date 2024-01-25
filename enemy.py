@@ -93,6 +93,7 @@ class Enemy(Entity):
                     return False
         else:
             return False
+        
     def _update_spell(self, spell, target):
         spell._update_spell_area_center(target.tile)
         spell.set_area_tiles(spell.spell_area_center)

@@ -31,7 +31,7 @@ class Game:
         Player(self, 'player', 'wolf',(5,10), self.entity_group ,self.players_group)
         Player(self, 'player', 'wolf',(9,7), self.entity_group ,self.players_group)
         # ENEMIES
-        Enemy(self._get_instance(), 'npc', 'wolf',(4,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'wolf',(17,6), self.entity_group ,self.enemies_group)
         Enemy(self._get_instance(), 'npc', 'wolf',(3,6), self.entity_group ,self.enemies_group)
 
         # CONTROLS

@@ -39,26 +39,22 @@ class Spell:
                         tile.draw_pos
                     )
                     
-    def draw_spell_range(self, surface):
-        if self._update_onwer_tile():
-            set_range_tiles = set()
-            set_range_tiles.add(self.owner_tile)
-            self.get_area_by_depth(self.owner_tile, 0, set_range_tiles, self.range)
-            self.range_tiles = set_range_tiles
-
-        self._draw_tile_hovers(surface, self.range_tiles, 'range')
-        
-        return self.range_tiles
-    
-    def set_area_tiles(self, center):
+    def set_area_tiles(self, center, type):
+        limit = self.area if type == 'area' else (self.range if type == 'range' else False)
         set_are_tiles = set()
         set_are_tiles.add(center)
-        self.get_area_by_depth(center, 0, set_are_tiles, self.area)
-        self.area_tiles =  set_are_tiles if center.status in (0,2) else None 
-       
+        self.get_area_by_depth(center, 0, set_are_tiles, limit)
+        return set_are_tiles if center.status in (0,2) else None 
+
+    def draw_spell_range(self, surface):
+        if self._update_onwer_tile():
+            self.range_tiles = self.set_area_tiles(self.owner_tile, 'range')
+        self._draw_tile_hovers(surface, self.range_tiles, 'range')
+        return self.range_tiles
+  
     def draw_spell_area(self, surface, center):
         if self._update_spell_area_center(center):
-            self.set_area_tiles(center)
+            self.area_tiles = self.set_area_tiles(center, 'area')
         if self.area_tiles:
             self._draw_tile_hovers(surface, self.area_tiles, 'area')
         return self.area_tiles
