@@ -93,18 +93,28 @@ class Enemy(Entity):
                     return False
         else:
             return False
+    def _update_spell(self, spell, target):
+        spell._update_spell_area_center(target.tile)
+        spell.set_area_tiles(spell.spell_area_center)
 
     def _cast_spell(self, target, spell):
+        self._update_spell(spell, target)
+        enemies_hitted = self.map.get_attacked_entities(spell.area_tiles, self.tag)
         self._update_ap(spell.ap_cost)
         spell.remaining_uses -= 1
-        if target.take_damage(spell.spell_dmg):
-            return False
-        else:
-            return True
+        keep_attacking = False
+        for enemy in enemies_hitted:
+            if enemy.take_damage(spell.spell_dmg):
+                if enemy.tile == spell.spell_area_center:
+                    keep_attacking = False
+            else:
+                keep_attacking = True
+
+        return keep_attacking
     
     def take_action(self):
         # Getting the closest and lowest hp targets
-        if self.game.players_group.sprites():
+        if [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']]:
             closest_target = self._get_closest_target()
             lowest_hp_target = self._get_lowest_hp_target()
 

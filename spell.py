@@ -49,17 +49,18 @@ class Spell:
         self._draw_tile_hovers(surface, self.range_tiles, 'range')
         
         return self.range_tiles
-        
+    
+    def set_area_tiles(self, center):
+        set_are_tiles = set()
+        set_are_tiles.add(center)
+        self.get_area_by_depth(center, 0, set_are_tiles, self.area)
+        self.area_tiles =  set_are_tiles if center.status in (0,2) else None 
+       
     def draw_spell_area(self, surface, center):
         if self._update_spell_area_center(center):
-            set_are_tiles = set()
-            set_are_tiles.add(center)
-            self.get_area_by_depth(center, 0, set_are_tiles, self.area)
-            self.area_tiles =  set_are_tiles if center.status in (0,2) else None
-        
+            self.set_area_tiles(center)
         if self.area_tiles:
             self._draw_tile_hovers(surface, self.area_tiles, 'area')
-    
         return self.area_tiles
 
     def get_area_by_depth(self, center, depth, set_tiles, end_flag):

@@ -95,12 +95,18 @@ class Map:
         else:
             return False, False
     
-    def get_attacked_entities(self, cast_area, spell_dmg):
-        for enemy in self.game.enemies_group.sprites():
-            if enemy.tile in cast_area:
-                enemy.take_damage(spell_dmg)
-        return True
-
+    def get_attacked_entities(self, cast_area, caster):
+        entities_hitted = []
+        if caster == 'player':
+            for enemy in self.game.enemies_group.sprites():
+                if enemy.tile in cast_area:
+                    entities_hitted.append(enemy)
+        elif caster == 'npc':
+            for player in self.game.players_group.sprites():
+                if player.tile in cast_area:
+                    entities_hitted.append(player)
+        return entities_hitted
+    
     def get_farthest_tile(self, target):
         farthest_tile = None
         max_distance = 0

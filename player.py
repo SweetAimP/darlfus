@@ -36,7 +36,10 @@ class Player(Entity):
         
     def _cast_dmg_spell(self):
         if self.spell_selected.spell_area_center.status == 0 or self.spell_selected.spell_area_center.status == 2:
-            return self.map.get_attacked_entities(self.spell_selected.area_tiles, self.spell_selected.spell_dmg)
+            enemies_hitted = self.map.get_attacked_entities(self.spell_selected.area_tiles, self.tag)
+            for enemy in enemies_hitted:
+                enemy.take_damage(self.spell_selected.spell_dmg)
+            return True
         else:
             return False
     
