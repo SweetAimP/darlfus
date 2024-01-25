@@ -27,6 +27,12 @@ entities = {
                 "se": "assets/entities/wolf/attack/attack_se.png",
                 "nw": "assets/entities/wolf/attack/attack_nw.png",
                 "ne": "assets/entities/wolf/attack/attack_ne.png"
+            },
+            "death" : {
+                "sw": "assets/entities/wolf/death/death_sw.png",
+                "se": "assets/entities/wolf/death/death_se.png",
+                "nw": "assets/entities/wolf/death/death_nw.png",
+                "ne": "assets/entities/wolf/death/death_ne.png"
             }
         }
     }

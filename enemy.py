@@ -63,13 +63,13 @@ class Enemy(Entity):
 
     def _get_lowest_hp_target(self):
         return min(
-                self.game.players_group.sprites(),
+                [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']],
                 key= lambda target: target.current_health
             )
     
     def _get_closest_target(self):
         return min(
-                self.game.players_group.sprites(),
+                [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']],
                 key= lambda target: distance_to(self.grid_pos, target.grid_pos)
             )
     
@@ -98,7 +98,6 @@ class Enemy(Entity):
         self._update_ap(spell.ap_cost)
         spell.remaining_uses -= 1
         if target.take_damage(spell.spell_dmg):
-            #self.casted = False
             return False
         else:
             return True
@@ -139,12 +138,13 @@ class Enemy(Entity):
     def attack(self):
         if self.spell_casting_index < len(self.best_dmg_combo):
             if self.animation.done:
-                if self._cast_spell(self.final_target, self.best_dmg_combo[self.spell_casting_index]):
+                test = self._cast_spell(self.final_target, self.best_dmg_combo[self.spell_casting_index])
+                if test:
                     self.set_action("idle", self.facing)
                     self.animation.done = False
                     self.spell_casting_index += 1
                 else:
-                    self.set_action("idle", self.facing)                
+                    self.set_action("idle", self.facing)
         else:
             self.spell_casting_index = 0
             self.set_action("idle", self.facing)

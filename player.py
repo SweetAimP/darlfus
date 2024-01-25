@@ -112,6 +112,8 @@ class Player(Entity):
                 self.move()
             elif self.actions['spell_cast'] or self.actions['attack']:
                 self.cast_spell()
+        if self.actions['death']:
+            self.death()
         
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
         self.animation.update()

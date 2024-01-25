@@ -21,7 +21,8 @@ class Entity(pg.sprite.Sprite, ABC):
             "walk" : False,
             "pre_cast": False,
             "spell_cast" : False,
-            "attack" : False
+            "attack" : False,
+            "death": False
         }       
 
         # ENTITY RELATED DATA
@@ -60,7 +61,13 @@ class Entity(pg.sprite.Sprite, ABC):
                 "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["se"],15,32),duration=self.duration,loop=False),
                 "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["nw"],15,32),duration=self.duration,loop=False),
                 "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["ne"],15,32),duration=self.duration,loop=False),
-            } 
+            },
+            'death':{
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["sw"],12,32),duration=self.duration,loop=False),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["se"],12,32),duration=self.duration,loop=False),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["nw"],12,32),duration=self.duration,loop=False),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["ne"],12,32),duration=self.duration,loop=False),
+            }  
         }
         self.animation = self.animations[self.action][self.facing]
         self.image = self.animation.img()
@@ -113,14 +120,17 @@ class Entity(pg.sprite.Sprite, ABC):
         else:
             return False
 
+    def death(self):
+        if self.animation.done:
+            self.kill()
+
     def take_damage(self, dmg):
         if self.current_health - dmg > 0:
             self.current_health -= dmg
             return False
         else:
             self.current_health = 0
-            self.kill()
-            return True
+            return self.set_action("death", self.facing) # True
 
     def _update_rect(self):
         self.rect.topleft = self.draw_pos
