@@ -42,31 +42,30 @@ class Entity(pg.sprite.Sprite, ABC):
         # ANIMATION
         # MOVEMENT IMAGE
         self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
-        self.duration = 6
         self.animations = {
             'idle':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["sw"],4,32),duration=self.duration,loop=True),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["se"],4,32),duration=self.duration,loop=True),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["nw"],4,32),duration=self.duration,loop=True),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["ne"],4,32),duration=self.duration,loop=True),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["sw"],4,32)),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["se"],4,32)),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["nw"],4,32)),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["ne"],4,32)),
             } ,
             'walk':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["sw"],8,32),duration=2,loop=True),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["se"],8,32),duration=2,loop=True),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["nw"],8,32),duration=2,loop=True),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["ne"],8,32),duration=2,loop=True),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["sw"],8,32),duration=2),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["se"],8,32),duration=2),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["nw"],8,32),duration=2),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["ne"],8,32),duration=2),
             },
             'attack':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["sw"],15,32),duration=self.duration,loop=False),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["se"],15,32),duration=self.duration,loop=False),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["nw"],15,32),duration=self.duration,loop=False),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["ne"],15,32),duration=self.duration,loop=False),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["sw"],15,32),loop=False),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["se"],15,32),loop=False),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["nw"],15,32),loop=False),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["ne"],15,32),loop=False),
             },
             'death':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["sw"],12,32),duration=self.duration,loop=False),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["se"],12,32),duration=self.duration,loop=False),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["nw"],12,32),duration=self.duration,loop=False),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["ne"],12,32),duration=self.duration,loop=False),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["sw"],12,32),duration=12,loop=False),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["se"],12,32),duration=12,loop=False),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["nw"],12,32),duration=12,loop=False),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["ne"],12,32),duration=12,loop=False),
             }  
         }
         self.animation = self.animations[self.action][self.facing]

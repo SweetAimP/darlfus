@@ -96,7 +96,7 @@ class Enemy(Entity):
         
     def _update_spell(self, spell, target):
         spell._update_spell_area_center(target.tile)
-        spell.set_area_tiles(spell.spell_area_center)
+        spell.area_tiles = spell.set_area_tiles(spell.spell_area_center, 'area')
 
     def _cast_spell(self, target, spell):
         self._update_spell(spell, target)
@@ -169,6 +169,8 @@ class Enemy(Entity):
                     self.move()
                 elif self.actions["attack"]:
                     self.attack()
+        if self.actions['death']:
+            self.death()
 
         # UPDATING PLAYER TILE ON THE GRID AND DRAWING COMPONENTS
         self.animation.update()
