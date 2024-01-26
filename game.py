@@ -28,11 +28,11 @@ class Game:
         self.map.make_grid('map.txt')
         
         # PLAYERS
-        Player(self, 'player', 'wolf',(5,10), self.entity_group ,self.players_group)
-        Player(self, 'player', 'wolf',(9,7), self.entity_group ,self.players_group)
+        Player(self, 'player', 'wolf',(9,16), self.entity_group ,self.players_group)
+        Player(self, 'player', 'wolf',(9,15), self.entity_group ,self.players_group)
         # ENEMIES
-        Enemy(self._get_instance(), 'npc', 'wolf',(17,6), self.entity_group ,self.enemies_group)
-        Enemy(self._get_instance(), 'npc', 'wolf',(3,6), self.entity_group ,self.enemies_group)
+        Enemy(self._get_instance(), 'npc', 'wolf',(5,7), self.entity_group ,self.enemies_group)
+        # Enemy(self._get_instance(), 'npc', 'wolf',(3,6), self.entity_group ,self.enemies_group)
 
         # CONTROLS
         self.mouse = Mouse(self._get_instance())

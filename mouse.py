@@ -13,7 +13,7 @@ class Mouse:
                 sys.exit()
             elif event.type == pg.MOUSEBUTTONDOWN:
                 current_player = self.game.current_player.get_instance()
-                if not current_player.actions['walk']:
+                if not current_player.actions['walk'] or not current_player.actions["attack"]:
                     if current_player.tag  == 'player':
                         # Access all the event hanlders from entities
                         if self.game.end_turn_rect.collidepoint(self.get_pos()):

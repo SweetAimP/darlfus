@@ -7,7 +7,7 @@ entities = {
         "ap": 10,
         "spells" :[
             {"name": "S1", "type": "dmg" ,"range":2, "area":1, "damage": 25, "ap_cost": 3, "max_usages": 2},
-            {"name": "S2", "type": "dmg" ,"range":8, "area":1, "damage": 30, "ap_cost": 5, "max_usages": 1},
+            {"name": "S2", "type": "dmg" ,"range":8, "area":0, "damage": 30, "ap_cost": 5, "max_usages": 1},
         ],
         "assets": {
             "idle" : {

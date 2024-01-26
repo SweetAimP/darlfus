@@ -39,8 +39,8 @@ class Spell:
                         tile.draw_pos
                     )
                     
-    def set_area_tiles(self, center, type):
-        limit = self.area if type == 'area' else (self.range if type == 'range' else False)
+    def set_area_tiles(self, center, type, range_modifier = 0):
+        limit = self.area if type == 'area' else (self.range + range_modifier if type == 'range' else False)
         set_are_tiles = set()
         set_are_tiles.add(center)
         self.get_area_by_depth(center, 0, set_are_tiles, limit)
