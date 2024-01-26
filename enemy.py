@@ -164,7 +164,6 @@ class Enemy(Entity):
         super().draw(surface)
 
     def _get_best_area_tile(self, spell):
-        # TEST
         final_target_area = spell.set_area_tiles(self.final_target.tile, 'area')
         entities = 1
         best_area_center = self.final_target.tile
@@ -177,9 +176,6 @@ class Enemy(Entity):
                 entities = attacked_entitties
                 best_area_center = tile
                 distance_center_tile = new_distance
-                
-        
-        area = spell.draw_spell_area(self.game.screen,best_area_center)
         return best_area_center
 
     def attack(self):
