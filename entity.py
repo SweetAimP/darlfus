@@ -44,28 +44,22 @@ class Entity(pg.sprite.Sprite, ABC):
         self.walking_hover = pg.image.load("assets/hovers/walking_hover.png").convert_alpha()
         self.animations = {
             'idle':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["sw"],4,32)),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["se"],4,32)),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["nw"],4,32)),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["idle"]["ne"],4,32)),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["idle"]["sw"],4,32)),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["idle"]["se"],4,32)),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["idle"]["nw"],4,32)),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["idle"]["ne"],4,32)),
             } ,
             'walk':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["sw"],8,32),duration=2),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["se"],8,32),duration=2),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["nw"],8,32),duration=2),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["walk"]["ne"],8,32),duration=2),
-            },
-            'attack':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["sw"],15,32),loop=False),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["se"],15,32),loop=False),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["nw"],15,32),loop=False),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["attack"]["ne"],15,32),loop=False),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["walk"]["sw"],8,32),duration=2),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["walk"]["se"],8,32),duration=2),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["walk"]["nw"],8,32),duration=2),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["walk"]["ne"],8,32),duration=2),
             },
             'death':{
-                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["sw"],12,32),duration=12,loop=False),
-                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["se"],12,32),duration=12,loop=False),
-                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["nw"],12,32),duration=12,loop=False),
-                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["assets"]["death"]["ne"],12,32),duration=12,loop=False),
+                "sw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["death"]["sw"],12,32),duration=12,loop=False),
+                "se" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["death"]["se"],12,32),duration=12,loop=False),
+                "nw" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["death"]["nw"],12,32),duration=12,loop=False),
+                "ne" : Animation(extrac_imgs_from_sheet(self.entity_data["animations"]["death"]["ne"],12,32),duration=12,loop=False),
             }  
         }
         self.animation = self.animations[self.action][self.facing]
@@ -73,7 +67,10 @@ class Entity(pg.sprite.Sprite, ABC):
         self.rect = self.image.get_rect(topleft = self.draw_pos)
 
         # SPELLS
-        self.spells = [Spell(self.get_instance(), settings) for settings in self.entity_data["spells"]]
+        self.spells = [Spell(self.get_instance(), self.entity_data["spells"][spell]) for spell in self.entity_data["spells"].keys()]
+        # FLAGS
+        self.spell_selected = None
+        self.casted_spells = {} # SPELL CAST COUNTING
 
         # GAMEPLAY VARIABLES
         self.usable_mp= self.mp
@@ -92,10 +89,12 @@ class Entity(pg.sprite.Sprite, ABC):
             for action_key in self.actions.keys():
                 if action == action_key:
                     self.actions[action_key] = True
-                    if self.action in self.animations:
-                        self.animation = self.animations[self.action][self.facing].copy()
                 else:
                     self.actions[action_key] = False
+            if self.actions["attack"]:
+                            self.animation = self.spell_selected.animations[self.facing]
+            elif self.action in self.animations:
+                self.animation = self.animations[self.action][self.facing]
             return True
         else:
             return False

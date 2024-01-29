@@ -5,11 +5,24 @@ entities = {
         "initiative": 100,
         "mp": 10,
         "ap": 10,
-        "spells" :[
-            {"name": "S1", "type": "dmg" ,"range":2, "area":1, "damage": 25, "ap_cost": 3, "max_usages": 2},
-            {"name": "S2", "type": "dmg" ,"range":8, "area":0, "damage": 30, "ap_cost": 5, "max_usages": 1},
-        ],
-        "assets": {
+        "spells" : {
+            "bite":{
+                "name" : "bite",
+                "type": "dmg",
+                "range": 2,
+                "area": 1,
+                "damage": 20,
+                "ap_cost": 3,
+                "max_usages": 2,
+                "animations":{
+                    "sw": "assets/entities/wolf/spells/bite/bite_sw.png",
+                    "se": "assets/entities/wolf/spells/bite/bite_se.png",
+                    "nw": "assets/entities/wolf/spells/bite/bite_nw.png",
+                    "ne": "assets/entities/wolf/spells/bite/bite_ne.png"
+                }
+            }
+        },
+        "animations": {
             "idle" : {
                 "sw": "assets/entities/wolf/idle/idle_sw.png",
                 "se": "assets/entities/wolf/idle/idle_se.png",
@@ -21,12 +34,6 @@ entities = {
                 "se": "assets/entities/wolf/walk/walk_se.png",
                 "nw": "assets/entities/wolf/walk/walk_nw.png",
                 "ne": "assets/entities/wolf/walk/walk_ne.png"
-            },
-            "attack" : {
-                "sw": "assets/entities/wolf/attack/attack_sw.png",
-                "se": "assets/entities/wolf/attack/attack_se.png",
-                "nw": "assets/entities/wolf/attack/attack_nw.png",
-                "ne": "assets/entities/wolf/attack/attack_ne.png"
             },
             "death" : {
                 "sw": "assets/entities/wolf/death/death_sw.png",

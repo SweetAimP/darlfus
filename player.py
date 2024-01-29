@@ -4,10 +4,6 @@ from utils import *
 class Player(Entity):
     def __init__(self, game, tag, type, grid_pos, *groups):
         super().__init__(game, tag, type, grid_pos, *groups)
-        
-        # FLAGS
-        self.spell_selected = None
-        self.casted_spells = {} # SPELL CAST COUNTING
     
     def get_animation(self):
         pass

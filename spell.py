@@ -1,4 +1,5 @@
 from utils import *
+from animation import Animation
 class Spell:
     def __init__(self, owner, spell_settings):
         self.owner = owner
@@ -17,6 +18,13 @@ class Spell:
         # IMAGES FOR HOVERING
         self.hover_img = pg.image.load('assets/hovers/hover.png').convert_alpha()
         self.spell_area_img = pg.image.load('assets/hovers/spell_area.png').convert_alpha()
+        # Animations
+        self.animations = {
+            "sw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["sw"], 15, 32), loop=False),
+            "se" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["se"], 15, 32), loop=False),
+            "nw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["nw"], 15, 32), loop=False),
+            "ne" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["ne"], 15, 32), loop=False),
+        }
 
     def _update_onwer_tile(self):
         if self.owner_tile != self.owner.tile:
