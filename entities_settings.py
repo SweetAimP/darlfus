@@ -9,7 +9,7 @@ entities = {
             "bite":{
                 "name" : "bite",
                 "type": "dmg",
-                "range": 2,
+                "range": 8,
                 "area": 1,
                 "damage": 20,
                 "ap_cost": 3,
@@ -20,7 +20,22 @@ entities = {
                     "nw": "assets/entities/wolf/spells/bite/bite_nw.png",
                     "ne": "assets/entities/wolf/spells/bite/bite_ne.png"
                 }
-            }
+            },
+            "howl":{
+                "name" : "howl",
+                "type": "dmg",
+                "range": 8,
+                "area": 2,
+                "damage": 10,
+                "ap_cost": 2,
+                "max_usages": 2,
+                "animations":{
+                    "sw": "assets/entities/wolf/spells/bite/bite_sw.png",
+                    "se": "assets/entities/wolf/spells/bite/bite_se.png",
+                    "nw": "assets/entities/wolf/spells/bite/bite_nw.png",
+                    "ne": "assets/entities/wolf/spells/bite/bite_ne.png"
+                }
+            },
         },
         "animations": {
             "idle" : {

@@ -22,6 +22,7 @@ class Enemy(Entity):
         self.best_dmg_combo = None
         self.spell_casting_index = 0
         self.final_target = None
+        self.final_target_distance = None
     
     def _set_spells_array(self):
         for spell in self.spells:
@@ -30,7 +31,7 @@ class Enemy(Entity):
             elif spell.type == 'mov':
                 self.mov_spells.append(spell)
 
-    def _get_combo_actions(self, spells, spell_capacity):
+    def _set_combo_actions(self, spells, spell_capacity):
         memo = {}  # Dictionary to store already computed results
         def dp(current_spell, remaining_capacity):
             if current_spell < 0 or remaining_capacity == 0:
@@ -59,7 +60,8 @@ class Enemy(Entity):
         for spell, uses in selected_spells:
             for _ in range(uses):
                 final_spells.append(spell)
-        return final_spells
+        self.best_dmg_combo =  final_spells
+        #return final_spells
 
     def _get_lowest_hp_target(self):
         return min(
@@ -95,105 +97,82 @@ class Enemy(Entity):
                     return False
         else:
             return False
-        
-    def _update_spell(self, spell, area_center):
-        spell._update_spell_area_center(area_center)
-        spell.area_tiles = spell.set_area_tiles(spell.spell_area_center, 'area')
 
-    def _cast_spell(self, target, spell):
-        if spell.area > 0:
-            center = self._get_best_area_tile(spell)
-        else:
-            center = target.tile
-
-        self._update_spell(spell, center)
-        enemies_hitted = self.map.get_attacked_entities(spell.area_tiles, self.tag)
-        self._update_ap(spell.ap_cost)
-        spell.remaining_uses -= 1
-        keep_attacking = False
-        for enemy in enemies_hitted:
-            if enemy.take_damage(spell.spell_dmg):
-                if enemy.tile == spell.spell_area_center:
-                    keep_attacking = False
-            else:
-                keep_attacking = True
-
-        return keep_attacking
+    def _get_targets(self):
+        closest_target = self._get_closest_target()
+        lowest_hp_target = self._get_lowest_hp_target()
+        return closest_target, lowest_hp_target
     
     def take_action(self):
-        # Getting the closest and lowest hp targets
-        players = [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']]
-        if players:
-            closest_target =  self._get_closest_target()
-            lowest_hp_target =  self._get_closest_target()
-            if self.usable_ap >= self.min_dmg_ap_req and not self.casted:
-                self.best_dmg_combo = self._get_combo_actions(self.spells, self.usable_ap)
-                min_range_spell = self._get_minimun_spell_range(self.best_dmg_combo)
-                distance_closest_target = distance_to(self.grid_pos, closest_target.grid_pos)
-                distance_lowest_hp_target = distance_to(self.grid_pos, lowest_hp_target.grid_pos)
-                self.final_target = closest_target if distance_closest_target < distance_lowest_hp_target else lowest_hp_target
-                distance_final_target = distance_to(self.grid_pos, self.final_target.grid_pos)
-                best_area_center = None
-                if min_range_spell.area > 0:
-                    best_area_center = self._get_best_area_tile(min_range_spell)
-                if distance_final_target <= min_range_spell.range:
-                    self.set_action("attack" , check_facing(self.final_target.grid_pos, self.grid_pos))
+        if [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']]:
+            closest_tg, lowest_tg = self._get_targets()
+            closest_target_distance =  distance_to(self.grid_pos, closest_tg.grid_pos)
+            lowest_hp_target_distance =  distance_to(self.grid_pos, lowest_tg.grid_pos)
+            if not self.casted and not self.best_dmg_combo :
+                self.final_target = lowest_tg if  lowest_hp_target_distance < closest_target_distance or lowest_hp_target_distance <= self.usable_mp else closest_tg
+                self.final_target_distance = distance_to(self.grid_pos, self.final_target.grid_pos)
+                self._set_combo_actions(self.spells, self.usable_ap)
+            
+            
+                min_range = self._get_minimun_spell_range(self.best_dmg_combo)
+                if self.final_target_distance > min_range.range:
+                    if min_range.range + self.usable_mp >= self.final_target_distance:
+                        steps = self.final_target_distance - min_range.range
+                        self._move(self.final_target, steps)
+                    else:
+                        self.best_dmg_combo[self.spell_casting_index].draw_spell_range()
                 else:
-                    to_go = best_area_center if best_area_center is not None else self.final_target
-                    steps = min(self.usable_mp, distance_final_target - min_range_spell.range)
-                    if not self._move(to_go, steps):
-                        self.end_turn()
-            elif self.usable_mp > 0:
-                    farthest_tile = self.map.get_farthest_tile(closest_target)
-                    if not self._move(farthest_tile, self.usable_mp):
-                        self.end_turn()
-            else:
+                    print("Can attack without moving")
+            elif not self.casted and self.best_dmg_combo:
+                self.spell_selected = self.best_dmg_combo[self.spell_casting_index]
+                self.spell_selected.draw_spell_range(self.game.screen)
+                self.spell_selected.draw_spell_area(self.game.screen, self.final_target.tile)
+                best_center = self._get_best_area()
+                self.spell_selected._update_spell_area_center(best_center)
+                self.set_action('attack', check_facing(best_center.grid_pos, self.grid_pos))
+            elif self.casted:
                 self.end_turn()
 
-            
-            
-            
-
-
-    def draw(self, surface):
-        if self.playing:
-            surface.blit(
-                self.walking_hover,
-                self.tile.rect.topleft
-            )
-        super().draw(surface)
-
-    def _get_best_area_tile(self, spell):
-        final_target_area = spell.set_area_tiles(self.final_target.tile, 'area')
-        entities = 1
-        best_area_center = self.final_target.tile
-        distance_center_tile = distance_to(self.grid_pos, best_area_center.grid_pos)
-        for tile in final_target_area:
-            new_area_tiles = spell.set_area_tiles(tile, 'area')
-            attacked_entitties =  len(self.map.get_attacked_entities(new_area_tiles,self.tag))
-            new_distance = distance_to(self.grid_pos, tile.grid_pos)
-            if attacked_entitties > entities and new_distance < distance_center_tile :
-                entities = attacked_entitties
-                best_area_center = tile
-                distance_center_tile = new_distance
-        return best_area_center
+    def _get_best_area(self):
+        best_center = None
+        amount = 0
+        new_area = None
+        if self.spell_selected.area > 0:
+            for tile in self.spell_selected.set_area_tiles(self.final_target.tile,'area'):
+                if tile.type == 1:
+                    new_area = self.spell_selected.set_area_tiles(tile,'area')
+                else:
+                    new_area = None
+                if new_area != None:
+                    temp_enemies = self.map.get_attacked_entities(new_area, 'npc')
+                    if len(temp_enemies) > amount:
+                        best_center = tile
+                        amount = len(temp_enemies)
+            return best_center
+        return self.final_target.tile
 
     def attack(self):
-        if self.spell_casting_index < len(self.best_dmg_combo):
+        death = False
+        death_player= None
+        if self.spell_casting_index + 1 < len(self.best_dmg_combo):
             if self.animation.done:
-                test = self._cast_spell(self.final_target, self.best_dmg_combo[self.spell_casting_index])
-                if test:
-                    self.set_action("idle", self.facing)
-                    self.animation.done = False
-                    self.spell_casting_index += 1
-                else:
-                    self.set_action("idle", self.facing)
+                enemies_hitted = self.map.get_attacked_entities(self.spell_selected.set_area_tiles(self.spell_selected.spell_area_center, 'area'), 'npc')
+                self._update_ap(self.spell_selected.ap_cost)
+                self.set_action('idle', self.facing)
+                self.spell_casting_index += 1
+                for player in enemies_hitted:
+                    death = player.take_damage(self.spell_selected.spell_dmg)
+                    if death:
+                        death_player = player
+                if death_player == self.final_target:
+                    self.spell_selected = None
+                    self.best_dmg_combo = None
+                    self.spell_casting_index = 0
+                    self.set_action('idle', self.facing)
         else:
-            self.spell_casting_index = 0
-            self.set_action("idle", self.facing)
+            self.casted = True
+            self.set_action('idle', self.facing)
 
-            
-                
 
     def update(self):
         if self.playing:
@@ -214,6 +193,14 @@ class Enemy(Entity):
         self._update_draw_pos()
         self._update_rect()
 
+    def draw(self, surface):
+        if self.playing:
+            surface.blit(
+                self.walking_hover,
+                self.tile.rect.topleft
+            )
+        super().draw(surface)
+
     def _set_action_cooldown(self):
         self.action_cooldown_time = pg.time.get_ticks()
 
@@ -224,6 +211,9 @@ class Enemy(Entity):
     def end_turn(self):
         self.playing = False
         self.casted = False
+        self.spell_selected = None
+        self.best_dmg_combo = None
+        self.spell_casting_index = 0
         self.set_action('idle', self.facing)
     
     def start_turn(self):
