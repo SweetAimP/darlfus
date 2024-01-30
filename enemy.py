@@ -177,8 +177,6 @@ class Enemy(Entity):
                 self.spell_casting_index = 0
                 self.set_action('idle', self.facing)
         
-
-
     def update(self):
         if self.playing:
             if pg.time.get_ticks() - self.action_cooldown_time >=  self.action_cooldown:
