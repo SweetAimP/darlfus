@@ -59,7 +59,7 @@ class Enemy(Entity):
         for spell, uses in selected_spells:
             for _ in range(uses):
                 final_spells.append(spell)
-        self.best_dmg_combo =  final_spells
+        self.best_dmg_combo = final_spells
         #return final_spells
 
     def _get_lowest_hp_target(self):
