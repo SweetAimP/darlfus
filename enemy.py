@@ -23,6 +23,7 @@ class Enemy(Entity):
         self.spell_casting_index = 0
         self.final_target = None
         self.final_target_distance = None
+        self.count = 0
     
     def _set_spells_array(self):
         for spell in self.spells:
@@ -103,6 +104,18 @@ class Enemy(Entity):
         lowest_hp_target = self._get_lowest_hp_target()
         return closest_target, lowest_hp_target
     
+    def _set_attack_action(self):
+        if self.spell_casting_index < len(self.best_dmg_combo):
+            self.spell_selected = self.best_dmg_combo[self.spell_casting_index]
+            self.spell_selected.draw_spell_range(self.game.screen)
+            self.spell_selected.draw_spell_area(self.game.screen, self.final_target.tile)
+            best_center = self._get_best_area()
+            self.spell_selected._update_spell_area_center(best_center)
+            self.set_action('attack', check_facing(best_center.grid_pos, self.grid_pos))
+        else:
+            self.casted = True
+            self.set_action('idle', self.facing)
+
     def take_action(self):
         if [sprite for sprite in self.game.players_group.sprites() if not sprite.actions['death']]:
             closest_tg, lowest_tg = self._get_targets()
@@ -112,8 +125,7 @@ class Enemy(Entity):
                 self.final_target = lowest_tg if  lowest_hp_target_distance < closest_target_distance or lowest_hp_target_distance <= self.usable_mp else closest_tg
                 self.final_target_distance = distance_to(self.grid_pos, self.final_target.grid_pos)
                 self._set_combo_actions(self.spells, self.usable_ap)
-            
-            
+
                 min_range = self._get_minimun_spell_range(self.best_dmg_combo)
                 if self.final_target_distance > min_range.range:
                     if min_range.range + self.usable_mp >= self.final_target_distance:
@@ -121,15 +133,11 @@ class Enemy(Entity):
                         self._move(self.final_target, steps)
                     else:
                         self.best_dmg_combo[self.spell_casting_index].draw_spell_range()
+                        self._set_attack_action()
                 else:
-                    print("Can attack without moving")
+                   self._set_attack_action()
             elif not self.casted and self.best_dmg_combo:
-                self.spell_selected = self.best_dmg_combo[self.spell_casting_index]
-                self.spell_selected.draw_spell_range(self.game.screen)
-                self.spell_selected.draw_spell_area(self.game.screen, self.final_target.tile)
-                best_center = self._get_best_area()
-                self.spell_selected._update_spell_area_center(best_center)
-                self.set_action('attack', check_facing(best_center.grid_pos, self.grid_pos))
+                self._set_attack_action()
             elif self.casted:
                 self.end_turn()
 
@@ -154,24 +162,21 @@ class Enemy(Entity):
     def attack(self):
         death = False
         death_player= None
-        if self.spell_casting_index + 1 < len(self.best_dmg_combo):
-            if self.animation.done:
-                enemies_hitted = self.map.get_attacked_entities(self.spell_selected.set_area_tiles(self.spell_selected.spell_area_center, 'area'), 'npc')
-                self._update_ap(self.spell_selected.ap_cost)
-                self.set_action('idle', self.facing)
-                self.spell_casting_index += 1
-                for player in enemies_hitted:
-                    death = player.take_damage(self.spell_selected.spell_dmg)
-                    if death:
-                        death_player = player
-                if death_player == self.final_target:
-                    self.spell_selected = None
-                    self.best_dmg_combo = None
-                    self.spell_casting_index = 0
-                    self.set_action('idle', self.facing)
-        else:
-            self.casted = True
+        if self.animation.done:
+            enemies_hitted = self.map.get_attacked_entities(self.spell_selected.set_area_tiles(self.spell_selected.spell_area_center, 'area'), 'npc')
+            self._update_ap(self.spell_selected.ap_cost)
+            self.spell_casting_index += 1
             self.set_action('idle', self.facing)
+            for player in enemies_hitted:
+                death = player.take_damage(self.spell_selected.spell_dmg)
+                if death:
+                    death_player = player
+            if death_player == self.final_target:
+                self.spell_selected = None
+                self.best_dmg_combo = None
+                self.spell_casting_index = 0
+                self.set_action('idle', self.facing)
+        
 
 
     def update(self):

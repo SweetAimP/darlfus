@@ -92,9 +92,9 @@ class Entity(pg.sprite.Sprite, ABC):
                 else:
                     self.actions[action_key] = False
             if self.actions["attack"]:
-                    self.animation = self.spell_selected.animations[self.facing]
+                    self.animation = self.spell_selected.animations[self.facing].copy()
             elif self.action in self.animations:
-                self.animation = self.animations[self.action][self.facing]
+                self.animation = self.animations[self.action][self.facing].copy()
             return True
         else:
             return False
