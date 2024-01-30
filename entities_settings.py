@@ -2,6 +2,7 @@ entities = {
     "wolf" : {
         "size":32,
         "max_health": 70,
+        "defense": 0,
         "initiative": 100,
         "mp": 10,
         "ap": 10,
@@ -9,6 +10,7 @@ entities = {
             "bite":{
                 "name" : "bite",
                 "type": "dmg",
+                "subtype" : None,
                 "range": 8,
                 "area": 1,
                 "damage": 20,
@@ -24,6 +26,7 @@ entities = {
             "howl":{
                 "name" : "howl",
                 "type": "dmg",
+                "subtype" : {"debuff": {"defense": -10}},
                 "range": 8,
                 "area": 2,
                 "damage": 10,

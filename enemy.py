@@ -170,9 +170,6 @@ class Enemy(Entity):
                 if death:
                     death_player = player
             if death_player == self.final_target:
-                # self.spell_selected = None
-                # self.best_dmg_combo = None
-                # self.spell_casting_index = 0
                 self.set_action('idle', self.facing)
         
     def update(self):

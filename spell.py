@@ -8,6 +8,7 @@ class Spell:
         self.remaining_uses = self.max_usages # USED WHEN CALCULATING THE BEST COMBO AT ENEMY LVL
         self.name = spell_settings["name"]
         self.type = spell_settings["type"]
+        self.subtype = spell_settings["subtype"]
         self.area = spell_settings["area"]
         self.range = spell_settings["range"]
         self.spell_dmg = spell_settings["damage"]
@@ -53,6 +54,14 @@ class Spell:
         set_are_tiles.add(center)
         self.get_area_by_depth(center, 0, set_are_tiles, limit)
         return set_are_tiles if center.status in (0,2) else None 
+
+    def aplly_effect(self, target):
+        if self.subtype != None:
+            for subtype in self.subtype.keys():
+                if subtype == 'debuff':
+                    for effect in self.subtype[subtype]:
+                        if effect =="defense":
+                            target.defense += self.subtype[subtype][effect]
 
     def draw_spell_range(self, surface):
         if self._update_onwer_tile():

@@ -31,6 +31,7 @@ class Entity(pg.sprite.Sprite, ABC):
         self.mp = self.entity_data['mp']
         self.ap = self.entity_data['ap']
         self.max_health = self.entity_data['max_health']
+        self.defense = self.entity_data['defense']
         self.current_health = self.max_health
         self.initiative = self.entity_data['initiative']
         self.health_bar = HealthBar(self.get_instance())
@@ -122,9 +123,16 @@ class Entity(pg.sprite.Sprite, ABC):
         if self.animation.done:
             self.kill()
 
+    def calculate_incoming_damage(self, damage_taken):
+        if self.defense == 0:
+            return damage_taken
+        else:
+            return int(damage_taken * ((100-self.defense) / 100 ))
+
     def take_damage(self, dmg):
-        if self.current_health - dmg > 0:
-            self.current_health -= dmg
+        final_damage = self.calculate_incoming_damage(dmg)
+        if self.current_health - final_damage > 0:
+            self.current_health -= final_damage
             return False
         else:
             self.current_health = 0

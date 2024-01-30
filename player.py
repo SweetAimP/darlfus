@@ -34,6 +34,7 @@ class Player(Entity):
         if self.spell_selected.spell_area_center.status == 0 or self.spell_selected.spell_area_center.status == 2:
             enemies_hitted = self.map.get_attacked_entities(self.spell_selected.area_tiles, self.tag)
             for enemy in enemies_hitted:
+                self.spell_selected.aplly_effect(enemy)
                 enemy.take_damage(self.spell_selected.spell_dmg)
             return True
         else:
