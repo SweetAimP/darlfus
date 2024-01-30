@@ -1,8 +1,6 @@
 import pygame as pg
 from utils import *
 from entity import Entity
-from itertools import product
-
 
 class Enemy(Entity):
     def __init__(self, game, tag, type, grid_pos, *groups):
