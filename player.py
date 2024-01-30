@@ -61,10 +61,10 @@ class Player(Entity):
             if casted:
                 self._update_ap(self.spell_selected.ap_cost)
                 self._increase_casted_times(self.spell_selected)
-                self.set_action('attack', check_facing(self.spell_selected.spell_area_center.grid_pos, self.grid_pos))
+                self.set_action('attack', self.facing)
         
         elif self.animation.done and self.actions['attack'] :
-            self.set_action('idle', self.facing)
+            self.set_action('idle', check_facing(self.spell_selected.spell_area_center.grid_pos, self.grid_pos))
 
     def draw_movement(self, surface):
             recons_path, directions = self.map.get_walking_path()

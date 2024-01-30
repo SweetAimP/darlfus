@@ -69,3 +69,5 @@ def check_facing(vector_to, vector_from):
             return 'ne'
         elif angle_degrees >= 45.0 and angle_degrees <= 135.0:
              return 'sw'
+        else:
+             return 'sw'

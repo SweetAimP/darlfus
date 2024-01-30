@@ -121,11 +121,11 @@ class Enemy(Entity):
             closest_tg, lowest_tg = self._get_targets()
             closest_target_distance =  distance_to(self.grid_pos, closest_tg.grid_pos)
             lowest_hp_target_distance =  distance_to(self.grid_pos, lowest_tg.grid_pos)
-            if not self.casted and not self.best_dmg_combo :
+            if not self.casted:
                 self.final_target = lowest_tg if  lowest_hp_target_distance < closest_target_distance or lowest_hp_target_distance <= self.usable_mp else closest_tg
                 self.final_target_distance = distance_to(self.grid_pos, self.final_target.grid_pos)
-                self._set_combo_actions(self.spells, self.usable_ap)
-
+                if not self.best_dmg_combo :
+                    self._set_combo_actions(self.spells, self.usable_ap)
                 min_range = self._get_minimun_spell_range(self.best_dmg_combo)
                 if self.final_target_distance > min_range.range:
                     if min_range.range + self.usable_mp >= self.final_target_distance:
@@ -172,9 +172,9 @@ class Enemy(Entity):
                 if death:
                     death_player = player
             if death_player == self.final_target:
-                self.spell_selected = None
-                self.best_dmg_combo = None
-                self.spell_casting_index = 0
+                # self.spell_selected = None
+                # self.best_dmg_combo = None
+                # self.spell_casting_index = 0
                 self.set_action('idle', self.facing)
         
     def update(self):
