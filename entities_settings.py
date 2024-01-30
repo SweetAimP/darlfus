@@ -10,7 +10,7 @@ entities = {
             "bite":{
                 "name" : "bite",
                 "type": "dmg",
-                "subtype" : None,
+                "subtype" : {"buff": {"vampirism": 100}},
                 "range": 8,
                 "area": 1,
                 "damage": 20,

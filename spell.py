@@ -63,6 +63,11 @@ class Spell:
                         if effect =="defense":
                             target.defense += self.subtype[subtype][effect]
 
+                elif subtype == 'buff':
+                    for effect in self.subtype[subtype]:
+                        if effect =="vampirism":
+                           self.owner.current_health = min(self.owner.max_health, self.owner.current_health + int(self.spell_dmg * (self.subtype[subtype][effect] / 100)))
+
     def draw_spell_range(self, surface):
         if self._update_onwer_tile():
             self.range_tiles = self.set_area_tiles(self.owner_tile, 'range')

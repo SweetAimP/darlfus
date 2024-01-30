@@ -166,6 +166,7 @@ class Enemy(Entity):
             self.spell_casting_index += 1
             self.set_action('idle', self.facing)
             for player in enemies_hitted:
+                self.spell_selected.aplly_effect(player)
                 death = player.take_damage(self.spell_selected.spell_dmg)
                 if death:
                     death_player = player
