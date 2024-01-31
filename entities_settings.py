@@ -17,6 +17,7 @@ entities = {
                 "ap_cost": 3,
                 "max_usages": 2,
                 "animations":{
+                    "frames": 15,
                     "sw": "assets/entities/wolf/spells/bite/bite_sw.png",
                     "se": "assets/entities/wolf/spells/bite/bite_se.png",
                     "nw": "assets/entities/wolf/spells/bite/bite_nw.png",
@@ -33,10 +34,11 @@ entities = {
                 "ap_cost": 2,
                 "max_usages": 2,
                 "animations":{
-                    "sw": "assets/entities/wolf/spells/bite/bite_sw.png",
-                    "se": "assets/entities/wolf/spells/bite/bite_se.png",
-                    "nw": "assets/entities/wolf/spells/bite/bite_nw.png",
-                    "ne": "assets/entities/wolf/spells/bite/bite_ne.png"
+                    "frames": 9,
+                    "sw": "assets/entities/wolf/spells/howl/howl_sw.png",
+                    "se": "assets/entities/wolf/spells/howl/howl_se.png",
+                    "nw": "assets/entities/wolf/spells/howl/howl_nw.png",
+                    "ne": "assets/entities/wolf/spells/howl/howl_ne.png"
                 }
             },
         },

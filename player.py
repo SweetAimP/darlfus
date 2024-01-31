@@ -62,7 +62,7 @@ class Player(Entity):
             if casted:
                 self._update_ap(self.spell_selected.ap_cost)
                 self._increase_casted_times(self.spell_selected)
-                self.set_action('attack', self.facing)
+                self.set_action('attack', check_facing(self.spell_selected.spell_area_center.grid_pos, self.grid_pos))
         
         elif self.animation.done and self.actions['attack'] :
             self.set_action('idle', check_facing(self.spell_selected.spell_area_center.grid_pos, self.grid_pos))

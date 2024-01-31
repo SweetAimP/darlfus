@@ -21,10 +21,10 @@ class Spell:
         self.spell_area_img = pg.image.load('assets/hovers/spell_area.png').convert_alpha()
         # Animations
         self.animations = {
-            "sw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["sw"], 15, 32), loop=False),
-            "se" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["se"], 15, 32), loop=False),
-            "nw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["nw"], 15, 32), loop=False),
-            "ne" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["ne"], 15, 32), loop=False),
+            "sw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["sw"], spell_settings["animations"]["frames"], 32), loop=False),
+            "se" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["se"], spell_settings["animations"]["frames"], 32), loop=False),
+            "nw" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["nw"], spell_settings["animations"]["frames"], 32), loop=False),
+            "ne" : Animation(extrac_imgs_from_sheet(spell_settings["animations"]["ne"], spell_settings["animations"]["frames"], 32), loop=False),
         }
 
     def _update_onwer_tile(self):
@@ -88,6 +88,3 @@ class Spell:
             set_tiles.add(neighbor)
             self.get_area_by_depth(neighbor, depth + 1, set_tiles, end_flag)
     
-            
-            
-
